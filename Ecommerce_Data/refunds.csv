@@ -1,0 +1,11 @@
+Refund ID,Order ID,Payment ID,Customer Email,Refund Date,Amount,Refund Reason,Processed By,Status,Notes
+re_w4j8h2g3k7l9p0m5,SHF1000011,pi_4b7x2smu7jq2tcclfxiqyf,william.garcia53@example.com,2024-01-19 00:39:00,430.71,Product quality issue,Jennifer Wilson,Completed,Customer received damaged items
+re_j5l2p8k6t9z1x3c7,SHF1000024,pi_4y4u7k9bqjb8gd4kf0yrw3,lisa.jones48@example.com,2024-03-28 00:48:00,27.12,Wrong item received,Michael Rodriguez,Completed,Partial refund for lipstick (wrong shade)
+re_h8j2k5l7m3n6p9q1,SHF1000031,pi_q5a47qm3q19vjqw9qfx1yd,david.jones86@example.com,2024-02-18 00:39:00,235.52,Item not as described,Sarah Thompson,Completed,Customer unhappy with material quality
+re_s7t2u5v9w3x6y8z4,SHF1000050,pi_bx2n0tmdcq5n8ybwk6m53h,john.taylor84@example.com,2024-03-12 00:33:00,156.23,Size/fit issue,David Clark,Completed,Partial refund for necklace (too small)
+re_p1q7r2s8t3u9v5w6,SHF1000067,pi_bx29w2xadr96dvycl429tp,john.brown82@example.com,2024-04-04 00:23:00,113.36,Delivery delayed,Emily Johnson,Completed,Partial refund for delivery inconvenience
+re_d5f9g1h6j2k8l3m7,SHF1000076,pi_tqhh2wdlbdkajxk3dgqti,lisa.taylor19@example.com,2024-04-02 00:17:00,212.97,Changed mind,Robert Garcia,Completed,Return within 30-day policy
+re_a3b7c2d8e1f4g9h5,SHF1000103,pi_b31m5l70vqcl7rl7p3m8,jennifer.johnson46@example.com,2024-02-28 00:36:00,68.57,Color different than shown,Lisa Adams,Completed,Partial refund for wallet (color issue)
+re_n6p4q8r2s7t1u3v5,SHF1000119,pi_yxftimqfcnfyxktxz0tjhc,william.miller15@example.com,2024-03-21 00:48:00,262.28,Damaged during shipping,Michelle Park,Completed,Partial refund for handbag (dented)
+re_t4g7h2j5k8l1z6x9,SHF1000044,pi_z8r2q9e5x4w7v6u3,emma.smith38@example.com,2024-03-12 12:35:00,42.97,Missing items in order,James Wilson,Processing,Customer didn't receive one item
+re_v9w5x2y8z4a6b1c3,SHF1000091,pi_j8k5l2m6n3p9q7r4,michael.brown72@example.com,2024-04-06 09:17:00,89.21,Order cancelation,Daniel Martinez,Pending,Customer requested cancelation before shipping

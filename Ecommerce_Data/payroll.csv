@@ -1,0 +1,26 @@
+Employee ID,First Name,Last Name,Position,Department,Pay Type,Hourly Rate,Salary,Pay Period,Hours Worked,Regular Pay,Overtime Hours,Overtime Pay,Bonus,Commission,Gross Pay,Federal Tax,State Tax,Social Security,Medicare,Health Insurance,401k,Other Deductions,Net Pay,Payment Date,Payment Method
+E001,John,Anderson,Warehouse Manager,Fulfillment,Salary,,65000.00,Bi-weekly,,2500.00,0,0.00,0.00,0.00,2500.00,375.00,168.75,155.00,36.25,120.00,125.00,0.00,1520.00,2024-04-15,Direct Deposit
+E002,Lisa,Chen,Marketing Specialist,Marketing,Salary,,58000.00,Bi-weekly,,2230.77,0,0.00,0.00,0.00,2230.77,334.62,150.58,138.31,32.35,120.00,111.54,0.00,1343.37,2024-04-15,Direct Deposit
+E003,Michael,Johnson,Customer Service Rep,Support,Hourly,18.50,,Bi-weekly,80,1480.00,5,138.75,0.00,0.00,1618.75,242.81,109.27,100.36,23.47,95.00,80.94,0.00,966.90,2024-04-15,Direct Deposit
+E004,Sarah,Williams,E-commerce Manager,Marketing,Salary,,72000.00,Bi-weekly,,2769.23,0,0.00,250.00,0.00,3019.23,452.88,203.80,187.19,43.78,120.00,150.96,0.00,1860.62,2024-04-15,Direct Deposit
+E005,David,Martinez,Inventory Specialist,Fulfillment,Hourly,21.00,,Bi-weekly,80,1680.00,12,378.00,0.00,0.00,2058.00,308.70,138.92,127.60,29.84,95.00,102.90,0.00,1255.04,2024-04-15,Direct Deposit
+E006,Jennifer,Taylor,Web Developer,Technology,Salary,,85000.00,Bi-weekly,,3269.23,0,0.00,0.00,0.00,3269.23,490.38,220.67,202.69,47.40,120.00,163.46,0.00,2024.63,2024-04-15,Direct Deposit
+E007,Robert,Brown,Sales Representative,Sales,Salary,,48000.00,Bi-weekly,,1846.15,0,0.00,0.00,985.30,2831.45,424.72,191.12,175.55,41.06,95.00,141.57,0.00,1762.43,2024-04-15,Direct Deposit
+E008,Emily,Garcia,Social Media Coordinator,Marketing,Hourly,19.75,,Bi-weekly,80,1580.00,0,0.00,0.00,0.00,1580.00,237.00,106.65,97.96,22.91,95.00,79.00,0.00,941.48,2024-04-15,Direct Deposit
+E009,William,Miller,Shipping Clerk,Fulfillment,Hourly,16.25,,Bi-weekly,80,1300.00,8,195.00,0.00,0.00,1495.00,224.25,100.91,92.69,21.68,95.00,74.75,0.00,885.72,2024-04-15,Direct Deposit
+E010,Jessica,Davis,Product Photographer,Marketing,Hourly,22.50,,Bi-weekly,80,1800.00,0,0.00,0.00,0.00,1800.00,270.00,121.50,111.60,26.10,95.00,90.00,0.00,1085.80,2024-04-15,Direct Deposit
+E011,Daniel,Wilson,IT Support Specialist,Technology,Salary,,62000.00,Bi-weekly,,2384.62,0,0.00,0.00,0.00,2384.62,357.69,160.96,147.85,34.58,120.00,119.23,0.00,1444.31,2024-04-15,Direct Deposit
+E012,Michelle,Thompson,Customer Service Manager,Support,Salary,,59000.00,Bi-weekly,,2269.23,0,0.00,100.00,0.00,2369.23,355.38,159.92,146.89,34.35,120.00,118.46,0.00,1434.23,2024-04-15,Direct Deposit
+E013,Christopher,Rodriguez,Content Writer,Marketing,Hourly,20.00,,Bi-weekly,80,1600.00,0,0.00,0.00,0.00,1600.00,240.00,108.00,99.20,23.20,95.00,80.00,0.00,954.60,2024-04-15,Direct Deposit
+E014,Amanda,Lee,Sales Representative,Sales,Salary,,47500.00,Bi-weekly,,1826.92,0,0.00,0.00,754.20,2581.12,387.17,174.22,160.03,37.43,95.00,129.06,0.00,1598.21,2024-04-15,Direct Deposit
+E015,James,White,Operations Director,Management,Salary,,95000.00,Bi-weekly,,3653.85,0,0.00,500.00,0.00,4153.85,623.08,280.38,257.54,60.23,120.00,207.69,0.00,2604.93,2024-04-15,Direct Deposit
+E001,John,Anderson,Warehouse Manager,Fulfillment,Salary,,65000.00,Bi-weekly,,2500.00,0,0.00,0.00,0.00,2500.00,375.00,168.75,155.00,36.25,120.00,125.00,0.00,1520.00,2024-04-01,Direct Deposit
+E002,Lisa,Chen,Marketing Specialist,Marketing,Salary,,58000.00,Bi-weekly,,2230.77,0,0.00,0.00,0.00,2230.77,334.62,150.58,138.31,32.35,120.00,111.54,0.00,1343.37,2024-04-01,Direct Deposit
+E003,Michael,Johnson,Customer Service Rep,Support,Hourly,18.50,,Bi-weekly,80,1480.00,8,222.00,0.00,0.00,1702.00,255.30,114.89,105.52,24.68,95.00,85.10,0.00,1021.51,2024-04-01,Direct Deposit
+E004,Sarah,Williams,E-commerce Manager,Marketing,Salary,,72000.00,Bi-weekly,,2769.23,0,0.00,0.00,0.00,2769.23,415.38,186.92,171.69,40.15,120.00,138.46,0.00,1696.63,2024-04-01,Direct Deposit
+E005,David,Martinez,Inventory Specialist,Fulfillment,Hourly,21.00,,Bi-weekly,80,1680.00,10,315.00,0.00,0.00,1995.00,299.25,134.66,123.69,28.93,95.00,99.75,0.00,1213.72,2024-04-01,Direct Deposit
+E006,Jennifer,Taylor,Web Developer,Technology,Salary,,85000.00,Bi-weekly,,3269.23,0,0.00,0.00,0.00,3269.23,490.38,220.67,202.69,47.40,120.00,163.46,0.00,2024.63,2024-04-01,Direct Deposit
+E007,Robert,Brown,Sales Representative,Sales,Salary,,48000.00,Bi-weekly,,1846.15,0,0.00,0.00,876.25,2722.40,408.36,183.76,168.79,39.47,95.00,136.12,0.00,1690.90,2024-04-01,Direct Deposit
+E008,Emily,Garcia,Social Media Coordinator,Marketing,Hourly,19.75,,Bi-weekly,80,1580.00,2,59.25,0.00,0.00,1639.25,245.89,110.65,101.63,23.77,95.00,81.96,0.00,980.35,2024-04-01,Direct Deposit
+E009,William,Miller,Shipping Clerk,Fulfillment,Hourly,16.25,,Bi-weekly,80,1300.00,15,365.63,0.00,0.00,1665.63,249.84,112.43,103.27,24.15,95.00,83.28,0.00,997.66,2024-04-01,Direct Deposit
+E010,Jessica,Davis,Product Photographer,Marketing,Hourly,22.50,,Bi-weekly,80,1800.00,4,135.00,0.00,0.00,1935.00,290.25,130.61,119.97,28.06,95.00,96.75,0.00,1174.36,2024-04-01,Direct Deposit

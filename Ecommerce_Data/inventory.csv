@@ -1,0 +1,28 @@
+SKU,Product Name,Category,Subcategory,Supplier,Cost Price,Retail Price,Current Stock,Reorder Level,Reorder Quantity,Last Restock Date,Location,Status,Lead Time Days,Units Sold MTD,Profit Margin
+APP-TSH001,Basic Cotton T-Shirt,Apparel,T-Shirt,GlobalThreads,12.50,24.99,78,25,100,2024-03-15,Warehouse A,Active,14,32,49.98%
+APP-TSH002,Premium Logo T-Shirt,Apparel,T-Shirt,FashionForward,18.75,39.99,42,20,50,2024-02-28,Warehouse A,Active,10,19,53.11%
+APP-JNS001,Slim Fit Jeans,Apparel,Jeans,DenimCo,28.50,59.99,37,15,30,2024-03-22,Warehouse A,Active,21,15,52.49%
+APP-JNS002,Relaxed Fit Jeans,Apparel,Jeans,DenimCo,27.00,54.99,22,15,30,2024-02-10,Warehouse A,Low Stock,21,8,50.90%
+APP-SWT001,Pullover Sweater,Apparel,Sweater,WarmStyles,32.75,72.99,31,10,25,2024-03-05,Warehouse A,Active,14,11,55.13%
+APP-DRS001,Casual Summer Dress,Apparel,Dress,FashionForward,38.50,84.99,19,10,20,2024-03-30,Warehouse A,Low Stock,10,12,54.70%
+APP-JKT001,Lightweight Jacket,Apparel,Jacket,OutdoorGear,45.25,96.99,26,10,15,2024-01-25,Warehouse A,Active,21,5,53.35%
+ELE-HPH001,Wireless Headphones,Electronics,Headphones,TechGlobal,85.50,179.99,16,8,12,2024-03-07,Warehouse B,Active,30,9,52.50%
+ELE-PCS001,Silicone Phone Case,Electronics,Phone Case,MobilePro,9.75,24.99,125,50,100,2024-02-15,Warehouse B,Active,7,65,60.98%
+ELE-CHG001,Fast Charging Cable,Electronics,Charger,PowerPlus,7.50,19.99,92,40,80,2024-02-15,Warehouse B,Active,7,38,62.48%
+ELE-EBD001,True Wireless Earbuds,Electronics,Wireless Earbuds,SoundSystems,68.25,149.99,14,7,10,2024-03-12,Warehouse B,Active,21,12,54.50%
+ELE-SWT001,Smart Fitness Watch,Electronics,Smart Watch,TechGlobal,112.50,249.99,11,5,8,2024-01-30,Warehouse B,Active,30,7,55.00%
+HMD-TPW001,Decorative Throw Pillow,Home Decor,Throw Pillow,HomeStyles,18.25,39.99,48,20,40,2024-03-14,Warehouse C,Active,14,22,54.36%
+HMD-WLA001,Modern Wall Art,Home Decor,Wall Art,ArtistryHome,42.50,105.99,17,8,15,2024-02-20,Warehouse C,Active,21,8,59.90%
+HMD-CNS001,Scented Candle Set,Home Decor,Candle Set,Aromatics,16.75,32.99,66,30,60,2024-03-17,Warehouse C,Active,10,44,49.23%
+HMD-VAS001,Ceramic Flower Vase,Home Decor,Vase,HomeStyles,22.50,54.99,29,15,25,2024-02-10,Warehouse C,Active,14,17,59.08%
+HMD-FRM001,Photo Frame Set,Home Decor,Photo Frame,ArtistryHome,24.75,56.99,33,15,30,2024-01-28,Warehouse C,Active,21,12,56.57%
+BTY-FCR001,Hydrating Face Cream,Beauty,Face Cream,BeautyEssentials,18.50,38.99,42,20,40,2024-03-22,Warehouse D,Active,14,28,52.55%
+BTY-LPS001,Long-wear Lipstick,Beauty,Lipstick,GlamCosmetics,12.25,23.99,57,25,50,2024-03-10,Warehouse D,Active,10,32,48.94%
+BTY-ESH001,Neutral Eyeshadow Palette,Beauty,Eyeshadow,GlamCosmetics,24.50,49.99,21,15,30,2024-02-25,Warehouse D,Low Stock,10,22,50.99%
+BTY-PRF001,Signature Perfume,Beauty,Perfume,FragranceWorld,38.75,89.99,19,10,20,2024-02-18,Warehouse D,Low Stock,30,14,56.94%
+BTY-MSK001,Hydrating Face Mask,Beauty,Face Mask,BeautyEssentials,11.25,24.99,81,40,80,2024-03-05,Warehouse D,Active,14,48,54.98%
+ACC-NCK001,Sterling Silver Necklace,Accessories,Necklace,LuxAccessories,28.50,69.99,22,10,15,2024-03-15,Warehouse E,Active,21,13,59.28%
+ACC-SNG001,Classic Sunglasses,Accessories,Sunglasses,VisionStyle,35.75,79.99,18,8,15,2024-02-15,Warehouse E,Active,21,9,55.31%
+ACC-HBG001,Leather Handbag,Accessories,Handbag,LuxAccessories,76.50,189.99,9,5,8,2024-01-30,Warehouse E,Low Stock,30,4,59.74%
+ACC-WLT001,RFID Blocking Wallet,Accessories,Wallet,LeatherGoods,22.25,54.99,34,15,30,2024-03-07,Warehouse E,Active,14,19,59.54%
+ACC-SCF001,Patterned Scarf,Accessories,Scarf,FashionForward,16.50,38.99,46,20,40,2024-02-25,Warehouse E,Active,10,24,57.68%

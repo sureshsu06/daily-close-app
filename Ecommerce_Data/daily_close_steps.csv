@@ -1,0 +1,73 @@
+category,step_number,step_name,description,assigned_to,status,priority,estimated_time_minutes,requires_approval,integration_required
+Revenue Reconciliation,1,Pull complete sales transaction data,Pull sales data from Shopify platform,Pip,Not Started,High,5,No,Yes
+Revenue Reconciliation,2,Extract payment processor settlement reports,Get Stripe settlement data for the day,Pip,Not Started,High,5,No,Yes
+Revenue Reconciliation,3,Reconcile platform sales against payment processor,Match Shopify orders with Stripe payments,Pip,Not Started,High,15,Yes,No
+Revenue Reconciliation,4,Identify and investigate discrepancies,Review and explain any mismatches between systems,Human,Not Started,High,30,Yes,No
+Revenue Reconciliation,5,Process returns and refunds,Account for all refunds and returns,Pip,Not Started,Medium,10,Yes,Yes
+Revenue Reconciliation,6,Reconcile gift card sales and redemptions,Track gift card activity,Pip,Not Started,Medium,10,Yes,No
+Revenue Reconciliation,7,Ensure proper tax collection,Verify tax collection across jurisdictions,Pip,Not Started,High,15,Yes,No
+Revenue Reconciliation,8,Confirm marketplace sales match payouts,Verify marketplace sales and payouts,Pip,Not Started,Medium,10,Yes,No
+Revenue Reconciliation,9,Review manual order adjustments,Approve any manual order changes,Human,Not Started,Medium,15,Yes,No
+Revenue Reconciliation,10,Finalize daily revenue journal entry,Create and post revenue JE,Pip,Not Started,High,5,Yes,Yes
+Inventory & COGS,1,Update inventory quantities,Get latest inventory levels from system,Pip,Not Started,High,5,No,Yes
+Inventory & COGS,2,Calculate COGS,Compute COGS based on units sold and costs,Pip,Not Started,High,10,Yes,No
+Inventory & COGS,3,Reconcile dropshipping fees,Account for third-party fulfillment costs,Pip,Not Started,Medium,10,Yes,No
+Inventory & COGS,4,Process inventory transfers,Record transfers between locations,Pip,Not Started,Medium,5,Yes,No
+Inventory & COGS,5,Process inventory adjustments,Record cycle count adjustments,Human,Not Started,Medium,15,Yes,No
+Inventory & COGS,6,Calculate shipping costs,Record daily shipping/fulfillment costs,Pip,Not Started,Medium,10,Yes,No
+Inventory & COGS,7,Update inventory reserve,Calculate obsolescence/writeoff reserve,Pip,Not Started,Medium,10,Yes,No
+Inventory & COGS,8,Verify marketplace fees,Confirm marketplace and payment fees,Pip,Not Started,Medium,10,Yes,No
+Inventory & COGS,9,Review shrinkage reports,Analyze inventory shrinkage and damage,Human,Not Started,Medium,15,Yes,No
+Inventory & COGS,10,Finalize COGS journal entry,Create and post COGS JE,Pip,Not Started,High,5,Yes,Yes
+Operating Expenses,1,Accrue marketing spend,Allocate daily marketing costs by channel,Pip,Not Started,High,10,Yes,No
+Operating Expenses,2,Record platform fees,Account for daily platform and subscription costs,Pip,Not Started,Medium,5,Yes,No
+Operating Expenses,3,Update fulfillment costs,Allocate warehouse and fulfillment costs,Pip,Not Started,Medium,10,Yes,No
+Operating Expenses,4,Process one-time expenses,Record approved invoice expenses,Human,Not Started,Medium,15,Yes,No
+Operating Expenses,5,Accrue payroll expenses,Calculate daily payroll and benefits,Pip,Not Started,High,10,Yes,No
+Operating Expenses,6,Update commission accruals,Calculate sales commissions,Pip,Not Started,Medium,10,Yes,No
+Operating Expenses,7,Record tech infrastructure costs,Account for daily technology costs,Pip,Not Started,Medium,5,Yes,No
+Operating Expenses,8,Allocate customer service costs,Distribute customer service expenses,Pip,Not Started,Medium,10,Yes,No
+Operating Expenses,9,Update service accruals,Accrue recurring service costs,Pip,Not Started,Medium,10,Yes,No
+Operating Expenses,10,Process credit card transactions,Record corporate card expenses,Pip,Not Started,High,10,Yes,No
+Operating Expenses,11,Finalize operating expense JE,Create and post operating expense JE,Pip,Not Started,High,5,Yes,Yes
+Cash Management,1,Record bank transactions,Process previous day's bank activity,Pip,Not Started,High,10,Yes,Yes
+Cash Management,2,Reconcile payment settlements,Match payment processor settlements,Pip,Not Started,High,15,Yes,No
+Cash Management,3,Account for marketplace payouts,Track marketplace payment timing,Pip,Not Started,Medium,10,Yes,No
+Cash Management,4,Track payment reserves,Monitor payment processor reserves,Pip,Not Started,Medium,10,Yes,No
+Cash Management,5,Update cash flow forecast,Refresh daily cash flow projections,Pip,Not Started,High,15,Yes,No
+Cash Management,6,Reconcile petty cash,Verify petty cash and expense accounts,Human,Not Started,Medium,15,Yes,No
+Cash Management,7,Convert foreign currency,Process FX transactions,Pip,Not Started,Medium,10,Yes,No
+Cash Management,8,Verify bank categorizations,Ensure proper transaction categorization,Human,Not Started,Medium,15,Yes,No
+Cash Management,9,Update cash dashboard,Refresh cash position metrics,Pip,Not Started,High,5,No,No
+Cash Management,10,Finalize cash journal entry,Create and post cash JE,Pip,Not Started,High,5,Yes,Yes
+Balance Sheet,1,Update AR aging,Refresh accounts receivable aging,Pip,Not Started,High,10,Yes,No
+Balance Sheet,2,Process aged receivables,Update collection status,Human,Not Started,Medium,15,Yes,No
+Balance Sheet,3,Reconcile AP,Match accounts payable with vendor statements,Pip,Not Started,High,15,Yes,No
+Balance Sheet,4,Calculate depreciation,Compute daily depreciation/amortization,Pip,Not Started,Medium,10,Yes,No
+Balance Sheet,5,Update lease liabilities,Calculate lease obligations,Pip,Not Started,Medium,10,Yes,No
+Balance Sheet,6,Recognize deferred revenue,Account for delivered/fulfilled orders,Pip,Not Started,High,10,Yes,No
+Balance Sheet,7,Track store credit,Monitor store credit liability,Pip,Not Started,Medium,10,Yes,No
+Balance Sheet,8,Track gift card liability,Update gift card breakage estimates,Pip,Not Started,Medium,10,Yes,No
+Balance Sheet,9,Update loyalty points,Calculate loyalty program liability,Pip,Not Started,Medium,10,Yes,No
+Balance Sheet,10,Record fixed assets,Process new fixed asset additions,Human,Not Started,Medium,15,Yes,No
+Balance Sheet,11,Finalize balance sheet JE,Create and post balance sheet JE,Pip,Not Started,High,5,Yes,Yes
+Performance Metrics,1,Calculate key metrics,Compute conversion rate, AOV, margins,Pip,Not Started,High,15,No,No
+Performance Metrics,2,Update CAC,Calculate customer acquisition cost by channel,Pip,Not Started,High,10,No,No
+Performance Metrics,3,Refresh CLV,Update customer lifetime value,Pip,Not Started,High,15,No,No
+Performance Metrics,4,Generate category report,Create sales by product category report,Pip,Not Started,Medium,10,No,No
+Performance Metrics,5,Update return rates,Calculate return rates by product,Pip,Not Started,Medium,10,No,No
+Performance Metrics,6,Calculate inventory turnover,Compute inventory turnover metrics,Pip,Not Started,Medium,10,No,No
+Performance Metrics,7,Update channel profitability,Analyze channel performance,Pip,Not Started,High,15,No,No
+Performance Metrics,8,Generate daily P&L,Create daily profit and loss statement,Pip,Not Started,High,10,Yes,No
+Performance Metrics,9,Compare to budget,Analyze performance vs budget/forecast,Pip,Not Started,High,15,Yes,No
+Performance Metrics,10,Distribute dashboard,Share financial dashboard with leadership,Pip,Not Started,High,5,No,No
+System & Control,1,Verify system integrations,Confirm all integrations processed,Pip,Not Started,High,10,Yes,No
+System & Control,2,Review exception reports,Analyze unusual transactions,Human,Not Started,High,15,Yes,No
+System & Control,3,Confirm balanced entries,Verify debits equal credits,Pip,Not Started,High,5,Yes,No
+System & Control,4,Verify cutoff,Confirm proper transaction cutoff,Human,Not Started,High,10,Yes,No
+System & Control,5,Address reconciliation items,Resolve all reconciliation issues,Human,Not Started,High,30,Yes,No
+System & Control,6,Lock previous day,Close previous day's books,Human,Not Started,High,5,Yes,No
+System & Control,7,Backup database,Create financial database backup,Pip,Not Started,High,5,No,No
+System & Control,8,Document adjustments,Record manual adjustments with approvals,Human,Not Started,High,10,Yes,No
+System & Control,9,Update audit trail,Document all close activities,Pip,Not Started,High,5,No,No
+System & Control,10,Certify close completion,Final sign-off on daily close,Human,Not Started,High,5,Yes,No 
