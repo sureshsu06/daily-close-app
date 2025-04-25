@@ -13,7 +13,7 @@ import { Send as SendIcon } from '@mui/icons-material';
 const ChatContainer = styled(Box)(({ theme }) => ({
   width: '280px',
   height: '100vh',
-  backgroundColor: '#fff',
+  backgroundColor: '#F8F9FA',
   borderLeft: '1px solid rgba(0, 0, 0, 0.08)',
   display: 'flex',
   flexDirection: 'column',
@@ -25,6 +25,7 @@ const ChatHeader = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   gap: theme.spacing(1),
+  backgroundColor: '#F8F9FA',
 }));
 
 const ChatMessages = styled(Box)(({ theme }) => ({
@@ -40,10 +41,11 @@ const MessageBubble = styled(Paper)<{ isUser?: boolean }>(({ theme, isUser }) =>
   padding: theme.spacing(1.5),
   maxWidth: '80%',
   alignSelf: isUser ? 'flex-end' : 'flex-start',
-  backgroundColor: isUser ? theme.palette.primary.main : '#F3F4F6',
+  backgroundColor: isUser ? theme.palette.primary.main : '#fff',
   color: isUser ? '#fff' : theme.palette.text.primary,
   borderRadius: '12px',
   boxShadow: 'none',
+  border: isUser ? 'none' : '1px solid rgba(0, 0, 0, 0.08)',
   '& .message-text': {
     fontSize: '13px',
     lineHeight: 1.4,
@@ -58,6 +60,7 @@ const MessageBubble = styled(Paper)<{ isUser?: boolean }>(({ theme, isUser }) =>
 const ChatInput = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
   borderTop: '1px solid rgba(0, 0, 0, 0.08)',
+  backgroundColor: '#fff',
 }));
 
 interface Message {
@@ -155,7 +158,7 @@ const ChatPanel: React.FC = () => {
           variant="outlined"
           sx={{
             '& .MuiOutlinedInput-root': {
-              backgroundColor: '#F3F4F6',
+              backgroundColor: '#F8F9FA',
               '& fieldset': {
                 borderColor: 'transparent'
               },

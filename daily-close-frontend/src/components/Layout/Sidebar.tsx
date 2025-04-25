@@ -28,7 +28,7 @@ import { CategoryTasks, DailyCloseTask } from '../../services/dailyCloseService'
 const SidebarContainer = styled(Box)(({ theme }) => ({
   width: 320,
   height: '100vh',
-  backgroundColor: '#fff',
+  backgroundColor: '#F8F9FA',
   display: 'flex',
   flexDirection: 'column',
   fontFamily: 'Inter, sans-serif',
@@ -41,6 +41,7 @@ const Logo = styled(Box)({
   justifyContent: 'space-between',
   padding: '16px',
   borderBottom: '1px solid rgba(0, 0, 0, 0.08)',
+  backgroundColor: '#F8F9FA',
 });
 
 const LogoSection = styled(Box)({
@@ -53,7 +54,7 @@ const LogoCircle = styled(Box)({
   width: 32,
   height: 32,
   borderRadius: '8px',
-  backgroundColor: '#000',
+  backgroundColor: '#1a73e8',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -93,20 +94,25 @@ const CategoryHeader = styled(ListItem)(({ theme }) => ({
     marginLeft: theme.spacing(1),
     color: theme.palette.text.secondary,
     fontSize: '13px',
+    backgroundColor: '#fff',
+    padding: '2px 8px',
+    borderRadius: '12px',
   },
 }));
 
 const TaskItem = styled(ListItem)<{ selected?: boolean }>(({ theme, selected }) => ({
   padding: '6px 16px',
   cursor: 'pointer',
-  backgroundColor: selected ? 'rgba(0, 0, 0, 0.06)' : 'transparent',
+  backgroundColor: selected ? '#fff' : 'transparent',
   '&:hover': {
-    backgroundColor: selected ? 'rgba(0, 0, 0, 0.08)' : 'rgba(0, 0, 0, 0.04)',
+    backgroundColor: selected ? '#fff' : 'rgba(0, 0, 0, 0.04)',
   },
   '& .MuiTypography-root': {
     fontSize: '13px',
     fontWeight: selected ? 500 : 400,
   },
+  borderRadius: selected ? '4px' : '0',
+  margin: selected ? '0 8px' : '0',
 }));
 
 const UserSection = styled(Box)({
@@ -115,6 +121,7 @@ const UserSection = styled(Box)({
   display: 'flex',
   alignItems: 'center',
   gap: '12px',
+  backgroundColor: '#fff',
 });
 
 interface SidebarProps {
