@@ -1,73 +1,53 @@
-category,step_number,step_name,description,assigned_to,status,priority,estimated_time_minutes,requires_approval,integration_required
-Revenue Reconciliation,1,Pull complete sales transaction data,Pull sales data from Shopify platform,Pip,Not Started,High,5,No,Yes
-Revenue Reconciliation,2,Extract payment processor settlement reports,Get Stripe settlement data for the day,Pip,Not Started,High,5,No,Yes
-Revenue Reconciliation,3,Reconcile platform sales against payment processor,Match Shopify orders with Stripe payments,Pip,Not Started,High,15,Yes,No
-Revenue Reconciliation,4,Identify and investigate discrepancies,Review and explain any mismatches between systems,Human,Not Started,High,30,Yes,No
-Revenue Reconciliation,5,Process returns and refunds,Account for all refunds and returns,Pip,Not Started,Medium,10,Yes,Yes
-Revenue Reconciliation,6,Reconcile gift card sales and redemptions,Track gift card activity,Pip,Not Started,Medium,10,Yes,No
-Revenue Reconciliation,7,Ensure proper tax collection,Verify tax collection across jurisdictions,Pip,Not Started,High,15,Yes,No
-Revenue Reconciliation,8,Confirm marketplace sales match payouts,Verify marketplace sales and payouts,Pip,Not Started,Medium,10,Yes,No
-Revenue Reconciliation,9,Review manual order adjustments,Approve any manual order changes,Human,Not Started,Medium,15,Yes,No
-Revenue Reconciliation,10,Finalize daily revenue journal entry,Create and post revenue JE,Pip,Not Started,High,5,Yes,Yes
-Inventory & COGS,1,Update inventory quantities,Get latest inventory levels from system,Pip,Not Started,High,5,No,Yes
-Inventory & COGS,2,Calculate COGS,Compute COGS based on units sold and costs,Pip,Not Started,High,10,Yes,No
-Inventory & COGS,3,Reconcile dropshipping fees,Account for third-party fulfillment costs,Pip,Not Started,Medium,10,Yes,No
-Inventory & COGS,4,Process inventory transfers,Record transfers between locations,Pip,Not Started,Medium,5,Yes,No
-Inventory & COGS,5,Process inventory adjustments,Record cycle count adjustments,Human,Not Started,Medium,15,Yes,No
-Inventory & COGS,6,Calculate shipping costs,Record daily shipping/fulfillment costs,Pip,Not Started,Medium,10,Yes,No
-Inventory & COGS,7,Update inventory reserve,Calculate obsolescence/writeoff reserve,Pip,Not Started,Medium,10,Yes,No
-Inventory & COGS,8,Verify marketplace fees,Confirm marketplace and payment fees,Pip,Not Started,Medium,10,Yes,No
-Inventory & COGS,9,Review shrinkage reports,Analyze inventory shrinkage and damage,Human,Not Started,Medium,15,Yes,No
-Inventory & COGS,10,Finalize COGS journal entry,Create and post COGS JE,Pip,Not Started,High,5,Yes,Yes
-Operating Expenses,1,Accrue marketing spend,Allocate daily marketing costs by channel,Pip,Not Started,High,10,Yes,No
-Operating Expenses,2,Record platform fees,Account for daily platform and subscription costs,Pip,Not Started,Medium,5,Yes,No
-Operating Expenses,3,Update fulfillment costs,Allocate warehouse and fulfillment costs,Pip,Not Started,Medium,10,Yes,No
-Operating Expenses,4,Process one-time expenses,Record approved invoice expenses,Human,Not Started,Medium,15,Yes,No
-Operating Expenses,5,Accrue payroll expenses,Calculate daily payroll and benefits,Pip,Not Started,High,10,Yes,No
-Operating Expenses,6,Update commission accruals,Calculate sales commissions,Pip,Not Started,Medium,10,Yes,No
-Operating Expenses,7,Record tech infrastructure costs,Account for daily technology costs,Pip,Not Started,Medium,5,Yes,No
-Operating Expenses,8,Allocate customer service costs,Distribute customer service expenses,Pip,Not Started,Medium,10,Yes,No
-Operating Expenses,9,Update service accruals,Accrue recurring service costs,Pip,Not Started,Medium,10,Yes,No
-Operating Expenses,10,Process credit card transactions,Record corporate card expenses,Pip,Not Started,High,10,Yes,No
-Operating Expenses,11,Finalize operating expense JE,Create and post operating expense JE,Pip,Not Started,High,5,Yes,Yes
-Cash Management,1,Record bank transactions,Process previous day's bank activity,Pip,Not Started,High,10,Yes,Yes
-Cash Management,2,Reconcile payment settlements,Match payment processor settlements,Pip,Not Started,High,15,Yes,No
-Cash Management,3,Account for marketplace payouts,Track marketplace payment timing,Pip,Not Started,Medium,10,Yes,No
-Cash Management,4,Track payment reserves,Monitor payment processor reserves,Pip,Not Started,Medium,10,Yes,No
-Cash Management,5,Update cash flow forecast,Refresh daily cash flow projections,Pip,Not Started,High,15,Yes,No
-Cash Management,6,Reconcile petty cash,Verify petty cash and expense accounts,Human,Not Started,Medium,15,Yes,No
-Cash Management,7,Convert foreign currency,Process FX transactions,Pip,Not Started,Medium,10,Yes,No
-Cash Management,8,Verify bank categorizations,Ensure proper transaction categorization,Human,Not Started,Medium,15,Yes,No
-Cash Management,9,Update cash dashboard,Refresh cash position metrics,Pip,Not Started,High,5,No,No
-Cash Management,10,Finalize cash journal entry,Create and post cash JE,Pip,Not Started,High,5,Yes,Yes
-Balance Sheet,1,Update AR aging,Refresh accounts receivable aging,Pip,Not Started,High,10,Yes,No
-Balance Sheet,2,Process aged receivables,Update collection status,Human,Not Started,Medium,15,Yes,No
-Balance Sheet,3,Reconcile AP,Match accounts payable with vendor statements,Pip,Not Started,High,15,Yes,No
-Balance Sheet,4,Calculate depreciation,Compute daily depreciation/amortization,Pip,Not Started,Medium,10,Yes,No
-Balance Sheet,5,Update lease liabilities,Calculate lease obligations,Pip,Not Started,Medium,10,Yes,No
-Balance Sheet,6,Recognize deferred revenue,Account for delivered/fulfilled orders,Pip,Not Started,High,10,Yes,No
-Balance Sheet,7,Track store credit,Monitor store credit liability,Pip,Not Started,Medium,10,Yes,No
-Balance Sheet,8,Track gift card liability,Update gift card breakage estimates,Pip,Not Started,Medium,10,Yes,No
-Balance Sheet,9,Update loyalty points,Calculate loyalty program liability,Pip,Not Started,Medium,10,Yes,No
-Balance Sheet,10,Record fixed assets,Process new fixed asset additions,Human,Not Started,Medium,15,Yes,No
-Balance Sheet,11,Finalize balance sheet JE,Create and post balance sheet JE,Pip,Not Started,High,5,Yes,Yes
-Performance Metrics,1,Calculate key metrics,Compute conversion rate, AOV, margins,Pip,Not Started,High,15,No,No
-Performance Metrics,2,Update CAC,Calculate customer acquisition cost by channel,Pip,Not Started,High,10,No,No
-Performance Metrics,3,Refresh CLV,Update customer lifetime value,Pip,Not Started,High,15,No,No
-Performance Metrics,4,Generate category report,Create sales by product category report,Pip,Not Started,Medium,10,No,No
-Performance Metrics,5,Update return rates,Calculate return rates by product,Pip,Not Started,Medium,10,No,No
-Performance Metrics,6,Calculate inventory turnover,Compute inventory turnover metrics,Pip,Not Started,Medium,10,No,No
-Performance Metrics,7,Update channel profitability,Analyze channel performance,Pip,Not Started,High,15,No,No
-Performance Metrics,8,Generate daily P&L,Create daily profit and loss statement,Pip,Not Started,High,10,Yes,No
-Performance Metrics,9,Compare to budget,Analyze performance vs budget/forecast,Pip,Not Started,High,15,Yes,No
-Performance Metrics,10,Distribute dashboard,Share financial dashboard with leadership,Pip,Not Started,High,5,No,No
-System & Control,1,Verify system integrations,Confirm all integrations processed,Pip,Not Started,High,10,Yes,No
-System & Control,2,Review exception reports,Analyze unusual transactions,Human,Not Started,High,15,Yes,No
-System & Control,3,Confirm balanced entries,Verify debits equal credits,Pip,Not Started,High,5,Yes,No
-System & Control,4,Verify cutoff,Confirm proper transaction cutoff,Human,Not Started,High,10,Yes,No
-System & Control,5,Address reconciliation items,Resolve all reconciliation issues,Human,Not Started,High,30,Yes,No
-System & Control,6,Lock previous day,Close previous day's books,Human,Not Started,High,5,Yes,No
-System & Control,7,Backup database,Create financial database backup,Pip,Not Started,High,5,No,No
-System & Control,8,Document adjustments,Record manual adjustments with approvals,Human,Not Started,High,10,Yes,No
-System & Control,9,Update audit trail,Document all close activities,Pip,Not Started,High,5,No,No
-System & Control,10,Certify close completion,Final sign-off on daily close,Human,Not Started,High,5,Yes,No 
+category,step_number,step_name,description,assigned_to,status,priority,estimated_time_minutes,requires_approval,integration_required,required_integrations
+AP,1,Send a reminder to the company to submit T&E and AP bills on time,Send reminder for T&E and AP bill submission,Pip,Not Started,High,5,No,No,""
+AP,2,Send a reminder to the Paul hosting LLC/USA Inc for unbilled amount for the month + Numerera and Baker Tilly,Follow up on unbilled amounts with vendors,Pip,Not Started,High,5,No,No,""
+Payroll,1,Download payroll JE from Papaya and post to NS,Process payroll journal entries from Papaya,Pip,Not Started,High,10,Yes,No,""
+Payroll,2,Check with HR if there are any terminations during the month and related severance that needs to be accrued,Review terminations and severance accruals,Human,Not Started,High,15,Yes,No,""
+AR,1,Record all remaining customer payments,Process outstanding customer payments,Pip,Not Started,High,10,Yes,No,""
+AR,2,Record all remaining customer invoices,Process pending customer invoices,Pip,Not Started,High,10,Yes,No,""
+Equity,1,Record stock option exercises if any,Record stock option exercises,Pip,Not Started,Medium,15,Yes,No,""
+AR,3,Review AR aging for any new items and verify if an invoice needs to be sent out to the customers,Review aging and identify invoicing needs,Pip,Not Started,High,10,Yes,No,""
+AR,4,Check with Amanda if any sales orders are executed close to month-end for which an invoice needs to be created,Verify month-end sales orders for invoicing,Human,Not Started,Medium,15,Yes,No,""
+Amortisations,1,Update amortisation schedule historically booked under legacy departments,Update historical amortization schedules,Pip,Not Started,Medium,20,Yes,No,""
+Cash,1,Record India i/c cash tranfer. Get bank statement from India and use FX rate to record the JE,Process India intercompany cash transfers,Pip,Not Started,High,10,Yes,Yes,"Bank"
+Cash,2,Record all cash transaction not captured during the month,Process pending cash transactions,Pip,Not Started,High,10,Yes,No,""
+Cash,3,Record intercompany cash transfers/fundings not captured during the month,Process intercompany transfers,Pip,Not Started,High,10,Yes,No,""
+Accruals,1,Record Deloitte fee accrual,Process Deloitte fee accruals,Pip,Not Started,Medium,5,Yes,No,""
+Payroll,3,Reconcile/review balance sheet payroll GL,Review payroll general ledger,Pip,Not Started,High,15,Yes,No,""
+Leases,1,Post Lease accounting JEs - to catch-up for 9 months in Sept 24,Update lease accounting entries,Pip,Not Started,Medium,30,Yes,No,""
+Payroll,4,PTO accrual entries,Process PTO accruals,Pip,Not Started,Medium,10,Yes,No,""
+AP,3,Make sure all AP on hand is posted to GL,Verify AP postings to general ledger,Pip,Not Started,High,10,Yes,No,""
+Accruals,2,Accrue Q1 commissions,Process Q1 commission accruals,Pip,Not Started,Medium,15,Yes,No,""
+Credit Cards,1,Upload CC activity to GL,Process credit card transactions,Pip,Not Started,Medium,10,Yes,No,""
+Cash,4,Record all cash transactions not captured during the month,Process remaining cash transactions,Pip,Not Started,High,10,Yes,No,""
+Expense Reports,1,Post a clearing JE in Germany to clear out cash and expense report,Clear German expense reports,Pip,Not Started,Medium,15,Yes,No,""
+Revenue,1,Recognize revenue - post all revenue JEs,Process revenue recognition entries,Pip,Not Started,High,15,Yes,Yes,""
+Employee loan,1,Accrual interest on Employee loan,Process employee loan interest,Pip,Not Started,Low,5,Yes,No,""
+Accruals,3,Record accrued expense,Process expense accruals,Pip,Not Started,Medium,10,Yes,No,""
+Accruals,4,Record accrued bonus (if applicable),Process bonus accruals if needed,Pip,Not Started,Medium,10,Yes,No,""
+Cash,5,To make sure all cash account balance and statement saved,Verify cash account reconciliations,Pip,Not Started,High,10,Yes,No,""
+Expense Reports,2,Post available expense reports on hand to GL,Process pending expense reports,Pip,Not Started,Medium,15,Yes,No,""
+Expense Reports,3,Accrue T&E (if material),Process material T&E accruals,Pip,Not Started,Medium,10,Yes,No,""
+Expense Reports,4,Accrue T&E (if material),Process additional material T&E accruals,Pip,Not Started,Medium,10,Yes,No,""
+Financial Statements,1,Department check for all transactions of Jan to Mar,Review departmental transactions,Human,Not Started,High,20,Yes,No,""
+Intercompany,1,Share I/C invoice base on transfer pricing agreements,Process intercompany invoices,Pip,Not Started,High,15,Yes,No,""
+Equity,2,Record SBC Quarterly - Need to catch-up 9 months of SBC expense,Update stock-based compensation,Pip,Not Started,High,30,Yes,No,""
+PPDs & Fixed Assets,1,Run Prepaids and Fixed Assets amortizations templates (depreciation),Process prepaid and fixed asset amortization,Pip,Not Started,Medium,20,Yes,No,""
+COGS,1,Perform COGS allocation - all subs - hosting fees,Allocate COGS across subsidiaries,Pip,Not Started,High,20,Yes,No,""
+Intercompany,2,Record I/C AR and AP based on transfer pricing agreements for India & Germany,Process India/Germany intercompany transactions,Pip,Not Started,High,15,Yes,No,""
+Intercompany,3,Run NetSuite close process and record Elimination and Consolidation JEs,Process consolidation entries,Pip,Not Started,High,20,Yes,Yes,"NetSuite"
+Financial Statements,2,Perform Flux analysis and record adjusting JEs,Review and adjust financial statements,Pip,Not Started,High,30,Yes,No,""
+Financial Statements,3,Present Flux analysis to management,Present financial analysis,Human,Not Started,High,20,Yes,No,""
+Cash,6,All payments for India,Process India payments,Pip,Not Started,High,15,Yes,Yes,"Bank"
+Cash,7,Save Stiffel Bank Statement,Save bank statements,Pip,Not Started,Low,5,No,No,""
+Cash,8,Fund Europe Subsidiary,Process European funding,Pip,Not Started,High,15,Yes,No,""
+Equity,3,Share exercise details from Carta,Record stock option exercises,Pip,Not Started,Medium,10,Yes,No,""
+Financial Statements,4,Ensure 2024 and 2025 entries are all recorded in appropriate period,Verify proper period recording,Human,Not Started,High,20,Yes,No,""
+Expenses,1,Medical benefits allocation,Allocate medical benefits,Pip,Not Started,Medium,15,Yes,No,""
+Expenses,2,Pull SVB points,Process SVB points,Pip,Not Started,Low,5,No,No,""
+AR,5,Accrue True up for Revenue,Process revenue true-up accruals,Pip,Not Started,High,15,Yes,No,""
+Funding,1,Fund India,Process India funding,Pip,Not Started,High,15,Yes,Yes,"Bank"
+Bonus,1,Bonus Reconciliation 2024,Reconcile 2024 bonus payments,Pip,Not Started,High,20,Yes,No,""
+Commission,1,Comm Reconciliation 2024,Reconcile 2024 commissions,Pip,Not Started,High,20,Yes,No,""
+Abu Dhabi,1,Kounted invoices - move to Other receivable,Reclassify Kounted invoices,Pip,Not Started,Medium,10,Yes,No,""
+Accruals,5,Exclusive Networks Accrual,Process Exclusive Networks accrual,Pip,Not Started,Medium,10,Yes,No,"" 

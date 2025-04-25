@@ -1,13 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Drawer,
   Box,
   Typography,
   IconButton,
-  Divider,
-  List,
-  ListItem,
-  ListItemText,
   Button,
   Table,
   TableBody,
@@ -16,11 +12,28 @@ import {
   TableHead,
   TableRow,
   Paper,
+  TextField,
+  Avatar,
+  Divider,
+  Breadcrumbs,
 } from '@mui/material';
-import { Close as CloseIcon } from '@mui/icons-material';
+import { styled } from '@mui/material/styles';
+import {
+  Close as CloseIcon,
+  Send as SendIcon,
+  Link as LinkIcon,
+  ChevronRight as ChevronRightIcon,
+} from '@mui/icons-material';
 import { DailyCloseTask, SubStep } from '../services/dailyCloseService';
-import StatusIcon from './StatusIcon';
 import StatusSelector from './StatusSelector';
+import UserAvatar from './UserAvatar';
+import PriorityIcon from './PriorityIcon';
+import IntegrationLogo from './IntegrationLogo';
+import { ShopifyOrdersTable } from './ShopifyOrdersTable';
+import { getMockShopifyOrders } from '../services/shopifyService';
+import StripeSettlementTable from './StripeSettlementTable';
+import { getMockStripePayments } from '../services/stripeService';
+import { BankReconciliationTable } from './BankReconciliationTable';
 
 interface TaskQuickViewProps {
   open: boolean;
@@ -30,10 +43,52 @@ interface TaskQuickViewProps {
   onStatusChange?: (taskId: number, newStatus: string, isSubtask?: boolean, subtaskId?: number) => void;
 }
 
-const TaskQuickView: React.FC<TaskQuickViewProps> = ({ open, onClose, task, isSubtask = false, onStatusChange }) => {
-  if (!task) return null;
+const CommentInput = styled(TextField)(({ theme }) => ({
+  '& .MuiOutlinedInput-root': {
+    backgroundColor: '#F8FAFB',
+    fontSize: '14px',
+    '& fieldset': {
+      borderColor: 'transparent',
+    },
+    '&:hover fieldset': {
+      borderColor: 'rgba(0, 0, 0, 0.12)',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: theme.palette.primary.main,
+    },
+    '& textarea': {
+      padding: '12px 14px',
+    },
+  },
+}));
 
-  const isParentTask = 'substeps' in task;
+const ActivityItem = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  gap: theme.spacing(1.5),
+  fontSize: '13px',
+  color: theme.palette.text.secondary,
+  padding: theme.spacing(1.5, 0),
+  '&:not(:last-child)': {
+    borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
+  },
+}));
+
+const HeaderButton = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(0.5),
+  padding: theme.spacing(0.5, 1),
+  borderRadius: theme.shape.borderRadius,
+  cursor: 'pointer',
+  '&:hover': {
+    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+  },
+}));
+
+const TaskQuickView: React.FC<TaskQuickViewProps> = ({ open, onClose, task, isSubtask = false, onStatusChange }) => {
+  const [comment, setComment] = useState('');
+  
+  if (!task) return null;
 
   const handleStatusChange = (newStatus: string) => {
     if (onStatusChange) {
@@ -47,6 +102,11 @@ const TaskQuickView: React.FC<TaskQuickViewProps> = ({ open, onClose, task, isSu
     }
   };
 
+  const handleCommentSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setComment('');
+  };
+
   return (
     <Drawer
       anchor="right"
@@ -55,223 +115,306 @@ const TaskQuickView: React.FC<TaskQuickViewProps> = ({ open, onClose, task, isSu
       PaperProps={{
         sx: {
           width: '100%',
-          height: '100%',
           maxWidth: '1200px',
-          padding: 3,
-          fontFamily: 'Inter Rounded, sans-serif',
-          borderLeft: '1px solid rgba(0, 0, 0, 0.12)',
-          '& .MuiDrawer-paper': {
-            width: '100%',
-            maxWidth: '1200px',
-          }
         },
       }}
     >
       <Box sx={{ 
-        display: 'flex', 
-        flexDirection: 'column',
-        height: '100%'
+        display: 'flex',
+        height: '100%',
       }}>
-        {/* Header */}
-        <Box sx={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          mb: 3,
-          borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
-          pb: 2
-        }}>
-          <Typography variant="h5" sx={{ fontWeight: 500 }}>
-            {isSubtask ? (task as SubStep).sub_step_name : (task as DailyCloseTask).step_name}
-          </Typography>
-          <IconButton onClick={onClose} size="small">
-            <CloseIcon />
-          </IconButton>
-        </Box>
-
-        {/* Content */}
+        {/* Main Content */}
         <Box sx={{ 
           flex: 1,
-          overflow: 'auto',
-          pr: 2,
-          mr: -2
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          borderRight: '1px solid rgba(0, 0, 0, 0.08)',
+          pl: 4,
         }}>
-          <Box sx={{ mb: 4 }}>
-            <Typography variant="body1" sx={{ mb: 3, color: 'text.secondary' }}>
+          {/* Header */}
+          <Box sx={{ 
+            p: 2,
+            display: 'flex',
+            flexDirection: 'column',
+          }}>
+            <Breadcrumbs
+              separator={<ChevronRightIcon sx={{ fontSize: 16, color: 'text.secondary' }} />}
+              sx={{
+                '& .MuiBreadcrumbs-li': {
+                  display: 'flex',
+                  alignItems: 'center',
+                },
+                '& .MuiBreadcrumbs-separator': {
+                  mx: 0.5,
+                },
+                mb: 2,
+              }}
+            >
+              <Typography 
+                variant="body2" 
+                sx={{ 
+                  color: 'text.secondary',
+                  fontSize: '13px',
+                  '&:hover': {
+                    color: 'text.primary',
+                    cursor: 'pointer',
+                  },
+                }}
+              >
+                {(task as DailyCloseTask).category || 'Tasks'}
+              </Typography>
+              <Typography 
+                variant="body2" 
+                sx={{ 
+                  color: isSubtask ? 'text.secondary' : 'text.primary',
+                  fontSize: '13px',
+                  '&:hover': {
+                    cursor: isSubtask ? 'pointer' : 'default',
+                    color: isSubtask ? 'text.primary' : 'text.primary',
+                  },
+                }}
+              >
+                {isSubtask ? (task as SubStep).main_step_name : (task as DailyCloseTask).step_name}
+              </Typography>
+              {isSubtask && (
+                <Typography 
+                  variant="body2" 
+                  sx={{ 
+                    color: 'text.primary',
+                    fontSize: '13px',
+                  }}
+                >
+                  {(task as SubStep).sub_step_name}
+                </Typography>
+              )}
+            </Breadcrumbs>
+          </Box>
+
+          {/* Description and Title */}
+          <Box sx={{ px: 2, pb: 0.5 }}>
+            <Typography 
+              variant="h1" 
+              sx={{ 
+                fontSize: '24px',
+                fontWeight: 600,
+                color: 'text.primary',
+                mb: 2,
+              }}
+            >
+              {isSubtask ? (task as SubStep).sub_step_name : (task as DailyCloseTask).step_name}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
               {isSubtask ? (task as SubStep).sub_step_description : (task as DailyCloseTask).description}
             </Typography>
           </Box>
 
-          <Box sx={{ mb: 4 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 500 }}>Details</Typography>
-            <List dense>
-              <ListItem>
-                <ListItemText
-                  primary="Status"
-                  secondary={
-                    <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
-                      <Box sx={{ '& > div': { justifyContent: 'flex-start' } }}>
-                        <StatusSelector
-                          currentStatus={task.status}
-                          onStatusChange={handleStatusChange}
-                          size={isSubtask ? 'small' : 'medium'}
-                          align="left"
-                        />
-                      </Box>
+          {/* Main Data Table */}
+          <Box sx={{ 
+            flex: 1, 
+            overflow: 'auto', 
+            p: 2,
+            mb: 3
+          }}>
+            {!isSubtask && (task as DailyCloseTask).step_name === 'Reconcile cash accounts with bank statements' ? (
+              <BankReconciliationTable 
+                onExceptionFound={(transaction) => {
+                  console.log('Exception found:', transaction);
+                }}
+              />
+            ) : !isSubtask && (task as DailyCloseTask).step_name === 'Extract Stripe daily settlement report with fees and refunds' ? (
+              <StripeSettlementTable payments={getMockStripePayments()} />
+            ) : (
+              <ShopifyOrdersTable orders={getMockShopifyOrders()} />
+            )}
+          </Box>
+
+          {/* Activity List */}
+          <Box sx={{ px: 2, py: 1.5 }}>
+            <Typography 
+              variant="subtitle2" 
+              sx={{ 
+                color: 'text.secondary',
+                fontSize: '13px',
+                fontWeight: 600,
+                letterSpacing: '0.5px',
+                mb: 2
+              }}
+            >
+              Activity
+            </Typography>
+            <ActivityItem>
+              <UserAvatar name="Pip" size="small" />
+              <Box>
+                <Box component="span" sx={{ color: 'text.primary', fontWeight: 500 }}>
+                  Pip
+                </Box>
+                {' '}created this task
+                <Box component="span" sx={{ display: 'block', fontSize: '12px', mt: 0.5 }}>
+                  1 day ago
+                </Box>
+              </Box>
+            </ActivityItem>
+
+            <ActivityItem>
+              <UserAvatar name="Marie" size="small" />
+              <Box>
+                <Box component="span" sx={{ color: 'text.primary', fontWeight: 500 }}>
+                  Marie Landau
+                </Box>
+                {' '}changed status to In Progress
+                <Box component="span" sx={{ display: 'block', fontSize: '12px', mt: 0.5 }}>
+                  2 hours ago
+                </Box>
+              </Box>
+            </ActivityItem>
+          </Box>
+
+          {/* Comment Section */}
+          <Box 
+            component="form" 
+            onSubmit={handleCommentSubmit} 
+            sx={{ p: 2, borderTop: '1px solid rgba(0, 0, 0, 0.08)' }}
+          >
+            <Box sx={{ 
+              position: 'relative',
+              backgroundColor: '#F8FAFB',
+              borderRadius: 1,
+            }}>
+              <CommentInput
+                fullWidth
+                multiline
+                minRows={2}
+                maxRows={4}
+                placeholder="Add a comment..."
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+              />
+              <Box sx={{ 
+                position: 'absolute',
+                bottom: 8,
+                right: 8,
+                display: 'flex',
+                gap: 1,
+                alignItems: 'center',
+              }}>
+                <IconButton 
+                  size="small" 
+                  sx={{ 
+                    color: 'text.secondary',
+                    p: 0.5,
+                    '&:hover': {
+                      backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                    },
+                  }}
+                >
+                  <LinkIcon fontSize="small" />
+                </IconButton>
+                <Button
+                  variant="contained"
+                  size="small"
+                  endIcon={<SendIcon />}
+                  disabled={!comment.trim()}
+                  type="submit"
+                  sx={{ 
+                    textTransform: 'none',
+                    minWidth: '80px',
+                    px: 2,
+                    height: 28,
+                  }}
+                >
+                  Send
+                </Button>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
+
+        {/* Properties Sidebar */}
+        <Box sx={{ 
+          width: '240px',
+          p: 2,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 3,
+        }}>
+          <Typography 
+            variant="subtitle2" 
+            sx={{ 
+              color: 'text.secondary',
+              fontSize: '13px',
+              fontWeight: 600,
+              letterSpacing: '0.5px',
+              mb: 1,
+            }}
+          >
+            Properties
+          </Typography>
+
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+            {/* Status */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <StatusSelector
+                currentStatus={task.status}
+                onStatusChange={handleStatusChange}
+                size="medium"
+                align="left"
+              />
+            </Box>
+
+            {/* Prepared By */}
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '13px', mb: 0.5 }}>
+                Prepared By
+              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                <UserAvatar name={task.assigned_to === 'Pip' ? 'Pip' : task.prepared_by || 'Not Set'} />
+                <Typography variant="body2" sx={{ color: 'text.primary' }}>
+                  {task.assigned_to === 'Pip' ? 'Pip' : task.prepared_by || 'Not Set'}
+                </Typography>
+              </Box>
+            </Box>
+
+            {/* Reviewed By */}
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '13px', mb: 0.5 }}>
+                Reviewed By
+              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                <UserAvatar name={task.reviewed_by || 'Not Set'} />
+                <Typography variant="body2" sx={{ color: 'text.primary' }}>
+                  {task.reviewed_by || 'Not Set'}
+                </Typography>
+              </Box>
+            </Box>
+
+            {/* Integrations */}
+            {!isSubtask && (task as DailyCloseTask).integration_required && (
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <Box sx={{ display: 'flex', gap: 1.5 }}>
+                  {(task as DailyCloseTask).required_integrations.split(',').map(integration => (
+                    <Box key={integration} sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                      <IntegrationLogo integration={integration.trim()} size="small" />
+                      <Typography variant="body2" sx={{ color: 'text.primary' }}>
+                        {integration.trim()}
+                      </Typography>
                     </Box>
-                  }
-                  primaryTypographyProps={{ fontWeight: 600 }}
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemText
-                  primary="Assignee"
-                  secondary={task.assigned_to}
-                  primaryTypographyProps={{ fontWeight: 600 }}
-                />
-              </ListItem>
-              {!isSubtask && (
-                <ListItem>
-                  <ListItemText
-                    primary="Priority"
-                    secondary={(task as DailyCloseTask).priority}
-                    primaryTypographyProps={{ fontWeight: 600 }}
-                  />
-                </ListItem>
-              )}
-              <ListItem>
-                <ListItemText
-                  primary="Estimated Time"
-                  secondary={`${task.estimated_time_minutes} minutes`}
-                  primaryTypographyProps={{ fontWeight: 600 }}
-                />
-              </ListItem>
-            </List>
-          </Box>
+                  ))}
+                </Box>
+              </Box>
+            )}
 
-          {/* Requirements */}
-          {!isSubtask && (
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" sx={{ mb: 2 }}>Requirements</Typography>
-              <List dense>
-                <ListItem>
-                  <ListItemText
-                    primary="Approval Required"
-                    secondary={(task as DailyCloseTask).requires_approval ? 'Yes' : 'No'}
-                    primaryTypographyProps={{ fontWeight: 600 }}
-                  />
-                </ListItem>
-                <ListItem>
-                  <ListItemText
-                    primary="Integration Required"
-                    secondary={(task as DailyCloseTask).integration_required ? 'Yes' : 'No'}
-                    primaryTypographyProps={{ fontWeight: 600 }}
-                  />
-                </ListItem>
-              </List>
-            </Box>
-          )}
-
-          {/* Subtasks (only for parent tasks) */}
-          {isParentTask && (task as DailyCloseTask).substeps && (task as DailyCloseTask).substeps.length > 0 && (
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" sx={{ mb: 2 }}>Subtasks</Typography>
-              <TableContainer component={Paper} variant="outlined">
-                <Table size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Status</TableCell>
-                      <TableCell>Name</TableCell>
-                      <TableCell>Assignee</TableCell>
-                      <TableCell>Est. Time</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {(task as DailyCloseTask).substeps.map((subtask) => (
-                      <TableRow 
-                        key={subtask.sub_step_number}
-                        hover
-                        sx={{ cursor: 'pointer' }}
-                        onClick={() => {
-                          onClose();
-                          // Add logic to open subtask quick view
-                        }}
-                      >
-                        <TableCell sx={{ '& > div': { justifyContent: 'flex-start' } }}>
-                          <StatusSelector
-                            currentStatus={subtask.status}
-                            onStatusChange={(newStatus) => {
-                              if (onStatusChange) {
-                                onStatusChange((task as DailyCloseTask).step_number, newStatus, true, subtask.sub_step_number);
-                              }
-                            }}
-                            size="small"
-                            align="left"
-                          />
-                        </TableCell>
-                        <TableCell>{subtask.sub_step_name}</TableCell>
-                        <TableCell>{subtask.assigned_to}</TableCell>
-                        <TableCell>{subtask.estimated_time_minutes} min</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Box>
-          )}
-
-          {/* Task Output */}
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="h6" sx={{ mb: 2 }}>Task Output</Typography>
-            <Box sx={{ 
-              backgroundColor: '#F8FAFB',
-              borderRadius: 1,
-              p: 2,
-              minHeight: 120,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <Typography color="text.secondary">
-                No output data available yet
-              </Typography>
-            </Box>
-          </Box>
-
-          {/* Exhibits */}
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="h6" sx={{ mb: 2 }}>Exhibits</Typography>
-            <Box sx={{ 
-              backgroundColor: '#F8FAFB',
-              borderRadius: 1,
-              p: 2,
-              minHeight: 100,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <Typography color="text.secondary">
-                No exhibits attached
-              </Typography>
-            </Box>
-          </Box>
-
-          {/* Action Buttons */}
-          <Box sx={{ mt: 'auto', display: 'flex', gap: 2 }}>
-            <Button
-              variant="contained"
-              fullWidth
-              sx={{ textTransform: 'none' }}
-            >
-              Mark as Complete
-            </Button>
-            <Button
-              variant="outlined"
-              fullWidth
-              sx={{ textTransform: 'none' }}
-            >
-              Add Note
-            </Button>
+            {/* Priority */}
+            {!isSubtask && (
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                  <PriorityIcon priority={(task as DailyCloseTask).priority} />
+                  <Typography variant="body2" sx={{ color: 'text.primary' }}>
+                    {(task as DailyCloseTask).priority}
+                  </Typography>
+                </Box>
+              </Box>
+            )}
           </Box>
         </Box>
       </Box>

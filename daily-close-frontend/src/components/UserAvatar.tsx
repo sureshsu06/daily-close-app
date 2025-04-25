@@ -9,10 +9,10 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
   fontWeight: 500,
 }));
 
-// Stock images for avatars
+// Local avatar images
 const AVATAR_IMAGES = {
-  pip: 'https://raw.githubusercontent.com/EY-X/ey-assets/main/pip-avatar.png',
-  human: 'https://raw.githubusercontent.com/EY-X/ey-assets/main/human-avatar.png'
+  pip: '/assets/avatars/pip-avatar.svg',
+  human: '/assets/avatars/human-avatar.svg'
 };
 
 interface UserAvatarProps {

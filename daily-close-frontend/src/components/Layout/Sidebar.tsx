@@ -1,27 +1,36 @@
-import React from 'react';
-import { Box, List, ListItem, ListItemText, Typography, ListItemIcon } from '@mui/material';
+import React, { useState } from 'react';
+import { 
+  Box, 
+  List, 
+  ListItem, 
+  ListItemText, 
+  Typography, 
+  ListItemIcon,
+  Collapse,
+  IconButton,
+  Divider,
+  Avatar
+} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   ViewList as TasksIcon,
-  TrendingUp as PnLIcon,
-  NotificationsActive as ActionsIcon,
-  People as TeamsIcon,
-  Person as UsersIcon,
-  Book as PlaybooksIcon,
-  Help as HelpIcon,
-  Settings as AdminIcon,
+  Search as SearchIcon,
+  GridView as GridIcon,
+  KeyboardArrowDown as ArrowDownIcon,
+  KeyboardArrowRight as ArrowRightIcon,
   KeyboardArrowDown as ArrowIcon
 } from '@mui/icons-material';
+import PriorityIcon from '../PriorityIcon';
+import StatusSelector from '../StatusSelector';
+import { CategoryTasks, DailyCloseTask } from '../../services/dailyCloseService';
 
 const SidebarContainer = styled(Box)(({ theme }) => ({
-  width: 200,
+  width: 320,
   height: '100vh',
-  backgroundColor: '#F8FAFB',
-  padding: theme.spacing(1.5),
+  backgroundColor: '#fff',
   display: 'flex',
   flexDirection: 'column',
-  gap: theme.spacing(2),
   fontFamily: 'Inter, sans-serif',
   borderRight: '1px solid rgba(0, 0, 0, 0.08)',
 }));
@@ -29,201 +38,197 @@ const SidebarContainer = styled(Box)(({ theme }) => ({
 const Logo = styled(Box)({
   display: 'flex',
   alignItems: 'center',
+  justifyContent: 'space-between',
+  padding: '16px',
+  borderBottom: '1px solid rgba(0, 0, 0, 0.08)',
+});
+
+const LogoSection = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
   gap: '8px',
-  marginBottom: '16px',
-  paddingLeft: '8px',
 });
 
 const LogoCircle = styled(Box)({
-  width: 24,
-  height: 24,
-  borderRadius: '6px',
+  width: 32,
+  height: 32,
+  borderRadius: '8px',
   backgroundColor: '#000',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   color: 'white',
-  fontSize: '14px',
+  fontSize: '16px',
   fontWeight: 500,
   fontFamily: 'Inter, sans-serif',
 });
 
-const NavList = styled(List)({
-  padding: '4px 0',
-  width: '100%',
-  '& .MuiListItem-root': {
-    borderRadius: '6px',
-    padding: '6px 8px',
-    marginBottom: '2px',
-    '&:hover': {
-      backgroundColor: 'rgba(0, 0, 0, 0.04)',
-    },
-    '&.active': {
-      backgroundColor: 'rgba(0, 0, 0, 0.06)',
-    },
-  },
-});
-
-const NavItem = styled(ListItem)({
-  cursor: 'pointer',
-});
-
-const CompanyName = styled(Typography)({
-  fontFamily: 'Inter, sans-serif',
-  fontWeight: 500,
-  fontSize: '15px',
-  color: '#000',
+const ActionIcons = styled(Box)({
   display: 'flex',
-  alignItems: 'center',
-  gap: '4px',
+  gap: '8px',
 });
 
-const SectionTitle = styled(Typography)({
-  fontSize: '13px',
-  fontWeight: 500,
-  color: '#6B7280',
-  padding: '0 8px',
-  marginTop: '16px',
-  marginBottom: '4px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
+const WorkspaceSection = styled(Box)({
+  padding: '16px',
 });
 
-const UserAvatar = styled(Box)({
-  width: 24,
-  height: 24,
-  borderRadius: '50%',
-  backgroundColor: '#E5E7EB',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+const WorkspaceTitle = styled(Typography)({
   fontSize: '12px',
-  color: '#4B5563',
-  fontWeight: 500,
+  color: '#6B7280',
+  marginBottom: '4px',
 });
 
-const Sidebar: React.FC = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
+const CategoryHeader = styled(ListItem)(({ theme }) => ({
+  padding: '8px 16px',
+  cursor: 'pointer',
+  '&:hover': {
+    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+  },
+  '& .MuiTypography-root': {
+    fontSize: '14px',
+    fontWeight: 500,
+    color: theme.palette.text.primary,
+  },
+  '& .category-count': {
+    marginLeft: theme.spacing(1),
+    color: theme.palette.text.secondary,
+    fontSize: '13px',
+  },
+}));
 
-  const mainNavItems = [
-    { text: 'Actions', path: '/actions', icon: <ActionsIcon sx={{ fontSize: 16 }} /> },
-  ];
+const TaskItem = styled(ListItem)<{ selected?: boolean }>(({ theme, selected }) => ({
+  padding: '6px 16px',
+  cursor: 'pointer',
+  backgroundColor: selected ? 'rgba(0, 0, 0, 0.06)' : 'transparent',
+  '&:hover': {
+    backgroundColor: selected ? 'rgba(0, 0, 0, 0.08)' : 'rgba(0, 0, 0, 0.04)',
+  },
+  '& .MuiTypography-root': {
+    fontSize: '13px',
+    fontWeight: selected ? 500 : 400,
+  },
+}));
 
-  const workspaceItems = [
-    { text: 'Daily Close Tasks', path: '/', icon: <TasksIcon sx={{ fontSize: 16 }} /> },
-    { text: 'Daily P&L', path: '/pnl', icon: <PnLIcon sx={{ fontSize: 16 }} /> },
-    { text: 'Teams', path: '/teams', icon: <TeamsIcon sx={{ fontSize: 16 }} /> },
-    { text: 'Users', path: '/users', icon: <UsersIcon sx={{ fontSize: 16 }} /> },
-  ];
+const UserSection = styled(Box)({
+  padding: '16px',
+  borderTop: '1px solid rgba(0, 0, 0, 0.08)',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '12px',
+});
 
-  const bottomNavItems = [
-    { text: 'Playbooks', path: '/playbooks', icon: <PlaybooksIcon sx={{ fontSize: 18 }} /> },
-    { text: 'Help', path: '/help', icon: <HelpIcon sx={{ fontSize: 18 }} /> },
-    { text: 'Admin', path: '/admin', icon: <AdminIcon sx={{ fontSize: 18 }} /> },
-  ];
+interface SidebarProps {
+  tasks: CategoryTasks[];
+  selectedTask: DailyCloseTask | null;
+  onTaskSelect: (task: DailyCloseTask) => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ tasks, selectedTask, onTaskSelect }) => {
+  const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
+
+  const toggleCategory = (category: string) => {
+    setExpandedCategories(prev => 
+      prev.includes(category) 
+        ? prev.filter(c => c !== category)
+        : [...prev, category]
+    );
+  };
 
   return (
     <SidebarContainer>
       <Logo>
-        <LogoCircle>A</LogoCircle>
-        <CompanyName>
-          Alpine <ArrowIcon sx={{ fontSize: 18, opacity: 0.5 }} />
-        </CompanyName>
+        <LogoSection>
+          <LogoCircle>A</LogoCircle>
+          <Typography 
+            sx={{ 
+              fontWeight: 500,
+              fontSize: '15px',
+              color: '#000',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+            }}
+          >
+            Alpine <ArrowIcon sx={{ fontSize: 18, opacity: 0.5 }} />
+          </Typography>
+        </LogoSection>
+        <ActionIcons>
+          <SearchIcon sx={{ fontSize: 20, color: '#6B7280' }} />
+          <GridIcon sx={{ fontSize: 20, color: '#6B7280' }} />
+        </ActionIcons>
       </Logo>
 
-      <NavList>
-        {mainNavItems.map((item) => (
-          <NavItem
-            key={item.path}
-            onClick={() => navigate(item.path)}
-            className={location.pathname === item.path ? 'active' : ''}
-          >
-            <ListItemIcon sx={{ minWidth: 28, color: 'inherit' }}>
-              {item.icon}
-            </ListItemIcon>
-            <ListItemText 
-              primary={item.text}
-              primaryTypographyProps={{
-                sx: { 
-                  fontFamily: 'Inter, sans-serif',
-                  fontWeight: location.pathname === item.path ? 500 : 400,
-                  fontSize: '14px',
-                }
-              }}
-            />
-          </NavItem>
-        ))}
-      </NavList>
+      <WorkspaceSection>
+        <WorkspaceTitle>Workspace</WorkspaceTitle>
+      </WorkspaceSection>
 
-      <SectionTitle>
-        Workspace
-      </SectionTitle>
+      <Box sx={{ flex: 1, overflow: 'auto' }}>
+        <List sx={{ py: 0 }}>
+          {tasks.map((category) => (
+            <React.Fragment key={category.category}>
+              <CategoryHeader onClick={() => toggleCategory(category.category)}>
+                <ListItemIcon sx={{ minWidth: 32 }}>
+                  {expandedCategories.includes(category.category) 
+                    ? <ArrowDownIcon sx={{ fontSize: 20 }} />
+                    : <ArrowRightIcon sx={{ fontSize: 20 }} />
+                  }
+                </ListItemIcon>
+                <ListItemText 
+                  primary={
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      {category.category}
+                      <span className="category-count">
+                        {category.tasks.length}
+                      </span>
+                    </Box>
+                  }
+                />
+              </CategoryHeader>
+              <Collapse in={expandedCategories.includes(category.category)}>
+                <List sx={{ py: 0 }}>
+                  {category.tasks.map((task) => (
+                    <TaskItem 
+                      key={task.step_number}
+                      selected={selectedTask?.step_number === task.step_number}
+                      onClick={() => onTaskSelect(task)}
+                    >
+                      <ListItemIcon sx={{ minWidth: 32 }}>
+                        <PriorityIcon priority={task.priority} />
+                      </ListItemIcon>
+                      <ListItemText 
+                        primary={task.step_name}
+                        sx={{ 
+                          '& .MuiTypography-root': { 
+                            textOverflow: 'ellipsis',
+                            overflow: 'hidden',
+                            whiteSpace: 'nowrap'
+                          }
+                        }}
+                      />
+                      <Box sx={{ ml: 1 }}>
+                        <StatusSelector
+                          currentStatus={task.status}
+                          onStatusChange={() => {}}
+                          size="small"
+                        />
+                      </Box>
+                    </TaskItem>
+                  ))}
+                </List>
+              </Collapse>
+            </React.Fragment>
+          ))}
+        </List>
+      </Box>
 
-      <NavList>
-        {workspaceItems.map((item) => (
-          <NavItem
-            key={item.path}
-            onClick={() => navigate(item.path)}
-            className={location.pathname === item.path ? 'active' : ''}
-          >
-            <ListItemIcon sx={{ minWidth: 28, color: 'inherit' }}>
-              {item.icon}
-            </ListItemIcon>
-            <ListItemText 
-              primary={item.text}
-              primaryTypographyProps={{
-                sx: { 
-                  fontFamily: 'Inter, sans-serif',
-                  fontWeight: location.pathname === item.path ? 500 : 400,
-                  fontSize: '14px',
-                }
-              }}
-            />
-          </NavItem>
-        ))}
-      </NavList>
-
-      <Box sx={{ flexGrow: 1 }} />
-
-      <NavList>
-        {bottomNavItems.map((item) => (
-          <NavItem
-            key={item.path}
-            onClick={() => navigate(item.path)}
-            className={location.pathname === item.path ? 'active' : ''}
-          >
-            <ListItemIcon sx={{ minWidth: 28, color: 'inherit' }}>
-              {item.icon}
-            </ListItemIcon>
-            <ListItemText 
-              primary={item.text}
-              primaryTypographyProps={{
-                sx: { 
-                  fontFamily: 'Inter, sans-serif',
-                  fontWeight: location.pathname === item.path ? 500 : 400,
-                  fontSize: '14px',
-                }
-              }}
-            />
-          </NavItem>
-        ))}
-        <NavItem>
-          <ListItemIcon sx={{ minWidth: 28 }}>
-            <UserAvatar>ML</UserAvatar>
-          </ListItemIcon>
-          <ListItemText 
-            primary="Marie Landau"
-            primaryTypographyProps={{
-              sx: { 
-                fontFamily: 'Inter, sans-serif',
-                fontSize: '14px',
-              }
-            }}
-          />
-        </NavItem>
-      </NavList>
+      <UserSection>
+        <Avatar sx={{ width: 32, height: 32, bgcolor: '#E5E7EB', color: '#374151', fontSize: '14px' }}>
+          SS
+        </Avatar>
+        <Typography sx={{ fontSize: '14px', fontWeight: 500 }}>
+          Surya Suresh
+        </Typography>
+      </UserSection>
     </SidebarContainer>
   );
 };
