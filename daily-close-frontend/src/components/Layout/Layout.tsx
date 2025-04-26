@@ -27,19 +27,14 @@ interface LayoutProps {
   tasks: CategoryTasks[];
   children: ReactNode;
   onTaskSelect: (task: DailyCloseTask) => void;
-  selectedTask: DailyCloseTask | null;
 }
 
-<<<<<<< Updated upstream:daily-close-frontend/src/components/Layout/Layout.tsx
 const Layout: React.FC<LayoutProps> = ({ tasks, children, onTaskSelect }) => {
-=======
-const Layout: React.FC<LayoutProps> = ({ tasks, children, onTaskSelect, selectedTask }) => {
->>>>>>> Stashed changes:src/components/Layout/Layout.tsx
   const [isChatOpen, setIsChatOpen] = useState(true);
 
   return (
     <LayoutContainer>
-      <Sidebar tasks={tasks} onTaskSelect={onTaskSelect} selectedTask={selectedTask} />
+      <Sidebar tasks={tasks} onTaskSelect={onTaskSelect} selectedTask={null} />
       <MainContent>
         {children}
       </MainContent>

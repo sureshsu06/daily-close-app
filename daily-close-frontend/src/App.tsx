@@ -32,10 +32,6 @@ const App: React.FC = () => {
         const data = await fetchDailyCloseTasks();
         console.log('Loaded tasks:', data);
         setTasks(data);
-        // Select the first task by default if none is selected
-        if (!selectedTask && data.length > 0 && data[0].tasks.length > 0) {
-          setSelectedTask(data[0].tasks[0]);
-        }
       } catch (error) {
         console.error('Error loading tasks:', error);
       } finally {
@@ -62,9 +58,9 @@ const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router basename={process.env.PUBLIC_URL}>
+      <Router>
         <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
-          <Layout tasks={tasks} onTaskSelect={handleTaskSelect} selectedTask={selectedTask}>
+          <Layout tasks={tasks} onTaskSelect={handleTaskSelect}>
             <Routes>
               <Route path="/" element={<Dashboard selectedTask={selectedTask} />} />
               <Route path="/actions" element={<ActionsView />} />
