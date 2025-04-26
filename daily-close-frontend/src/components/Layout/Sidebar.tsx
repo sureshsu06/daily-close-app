@@ -96,7 +96,12 @@ const CategoryHeader = styled(ListItem)(({ theme }) => ({
     fontSize: '13px',
     backgroundColor: '#fff',
     padding: '2px 8px',
-    borderRadius: '12px',
+    borderRadius: '4px',
+    minWidth: '24px',
+    minHeight: '24px',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 }));
 
