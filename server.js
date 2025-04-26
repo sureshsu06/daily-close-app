@@ -10,8 +10,8 @@ app.use(cors());
 
 app.get('/api/daily-close-tasks', async (req, res) => {
   try {
-    const stepsPath = path.join(__dirname, '../Ecommerce_Data/daily_close_steps.csv');
-    const substepsPath = path.join(__dirname, '../Ecommerce_Data/daily_close_substeps.csv');
+    const stepsPath = path.join(__dirname, './Ecommerce_Data/daily_close_steps.csv');
+    const substepsPath = path.join(__dirname, './Ecommerce_Data/daily_close_substeps.csv');
     
     const [stepsCSV, substepsCSV] = await Promise.all([
       fs.readFile(stepsPath, 'utf-8'),

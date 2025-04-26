@@ -1,5 +1,4 @@
 import Papa from 'papaparse';
-import axios from 'axios';
 
 export interface DailyCloseTask {
   category: string;

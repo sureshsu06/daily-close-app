@@ -74,10 +74,10 @@ interface Message {
 }
 
 interface ChatPanelProps {
-  onClose: () => void;
+  onClose?: () => void;
 }
 
-const ChatPanel: React.FC<ChatPanelProps> = ({ onClose }) => {
+const ChatPanel: React.FC<ChatPanelProps> = ({ onClose = () => {} }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
