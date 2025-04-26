@@ -40,7 +40,11 @@ jobs:
         run: npm ci
 
       - name: Build production bundle
-        run: npm run build
+        run: |
+          npm run build
+          cp build/index.html build/404.html
+        env:
+          PUBLIC_URL: "https://sureshsu06.github.io/daily-close-app"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
