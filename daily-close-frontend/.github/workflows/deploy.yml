@@ -23,13 +23,12 @@ jobs:
         run: npm ci                  # clean install for CI environments :contentReference[oaicite:7]{index=7}
 
       - name: Build production bundle
-        run: npm run build           # assumes your package.json has a “build” script :contentReference[oaicite:8]{index=8}
+        run: npm run build           # assumes your package.json has a "build" script :contentReference[oaicite:8]{index=8}
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: main
+          BRANCH: gh-pages
           FOLDER: build
-          TARGET_FOLDER: docs
           CLEAN: true
