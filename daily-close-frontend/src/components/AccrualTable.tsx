@@ -254,6 +254,22 @@ export const AccrualTable: React.FC<AccrualTableProps> = ({ taskContext = false 
   const [selectedAccrual, setSelectedAccrual] = useState<AccrualEntry | undefined>(undefined);
   const [historyModalOpen, setHistoryModalOpen] = useState(false);
 
+  const recommendations = React.useMemo(() => {
+    if (loading || !accruals.length) return null;
+    
+    const recurring = accruals.filter(a => a.type === 'Recurring');
+    const variable = accruals.filter(a => a.type === 'Monthly expense');
+    const totalRecommended = recurring.reduce((sum, a) => sum + a.amount, 0) + 
+      variable.reduce((sum, a) => sum + a.amount, 0);
+    
+    return {
+      recurring: recurring.length,
+      variable: variable.length,
+      totalRecommended,
+      highConfidence: recurring.length + variable.filter(a => a.amount > 1000).length,
+    };
+  }, [accruals, loading]);
+
   const handleAddAccrual = () => {
     setSelectedAccrual(undefined);
     setIsModalOpen(true);
@@ -298,7 +314,6 @@ export const AccrualTable: React.FC<AccrualTableProps> = ({ taskContext = false 
           getAccrualSummary(taskContext),
         ]);
         
-        console.log('Loaded accruals:', accrualData); // Debug log
         setAccruals(accrualData);
         setSummary(summaryData);
       } catch (error) {
@@ -332,34 +347,10 @@ export const AccrualTable: React.FC<AccrualTableProps> = ({ taskContext = false 
     }
   };
 
-  const filteredAccruals = accruals.filter(accrual => {
-    if (filter.status && accrual.status !== filter.status) return false;
-    if (filter.type && accrual.type !== filter.type) return false;
-    if (filter.category && accrual.category !== filter.category) return false;
-    return true;
-  });
-
-  // Calculate recommendations for all accruals
-  const getRecommendations = () => {
-    const recurring = accruals.filter(a => a.type === 'Recurring');
-    const variable = accruals.filter(a => a.type === 'Monthly expense');
-    const totalRecommended = recurring.reduce((sum, a) => sum + a.amount, 0) + 
-      variable.reduce((sum, a) => sum + a.amount, 0);
-    
-    return {
-      recurring: recurring.length,
-      variable: variable.length,
-      totalRecommended,
-      highConfidence: recurring.length + variable.filter(a => a.amount > 1000).length,
-    };
-  };
-
-  const recommendations = accruals.length ? getRecommendations() : null;
-
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}>
-        <Typography>Loading accruals...</Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
+        <Typography variant="h6" color="text.secondary">Loading accruals...</Typography>
       </Box>
     );
   }
@@ -367,48 +358,37 @@ export const AccrualTable: React.FC<AccrualTableProps> = ({ taskContext = false 
   if (!accruals.length) {
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, py: 4 }}>
-        <Typography variant="h6">No accruals found</Typography>
+        <Typography variant="h6" color="text.secondary">No accruals found</Typography>
       </Box>
     );
   }
 
   const hasExceptions = summary?.exceptionCount && summary.exceptionCount > 0;
 
+  const filteredAccruals = accruals.filter(accrual => {
+    if (filter.status && accrual.status !== filter.status) return false;
+    if (filter.type && accrual.type !== filter.type) return false;
+    if (filter.category && accrual.category !== filter.category) return false;
+    return true;
+  });
+
   return (
     <Box>
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="h4" sx={{ mb: 2 }}>Monthly Business Expenses</Typography>
-        
-        {recommendations && (
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-              Based on historical patterns, we recommend accruing {recommendations.recurring} recurring expenses 
-              (fixed amounts) and {recommendations.variable} variable expenses this month. 
-              {recommendations.highConfidence > 0 && ` ${recommendations.highConfidence} of these recommendations have high confidence based on consistent past activity.`}
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              The total recommended accrual amount is <strong>${recommendations.totalRecommended.toLocaleString()}</strong>.
-              Click the history icon on any expense to see detailed recommendations and past activity.
-            </Typography>
-          </Box>
-        )}
-
-        {summary && (
-          <SummaryText sx={{ mt: 3 }}>
-            Showing <span className="highlight">{filteredAccruals.length}</span> monthly expenses 
-            with a total value of <span className="highlight">${summary.totalAmount.toLocaleString()}</span>. 
-            {summary.reviewCount > 0 && (
-              <span> There are <span className="highlight">{summary.reviewCount}</span> items for review.</span>
-            )}
-          </SummaryText>
-        )}
-
-        {hasExceptions && (
-          <Alert severity="warning" sx={{ mt: 2 }}>
-            There are {summary?.exceptionCount} expenses that require immediate attention
-          </Alert>
-        )}
-      </Box>
+      {recommendations && (
+        <Box component="div" sx={{ mb: 3 }}>
+          <Typography variant="body1" gutterBottom>
+            Based on historical patterns, there are {recommendations.recurring} recurring and {recommendations.variable} variable expenses recommended for accrual. 
+            {recommendations.highConfidence} of these recommendations have high confidence. 
+            The total recommended accrual amount is ${recommendations.totalRecommended.toLocaleString()}.
+            Click the history icon to see detailed recommendations.
+          </Typography>
+          {hasExceptions && (
+            <Alert severity="warning" sx={{ mt: 2 }}>
+              There are {summary?.exceptionCount} expenses that require immediate attention
+            </Alert>
+          )}
+        </Box>
+      )}
 
       <StyledTableContainer>
         <Table stickyHeader>
@@ -421,7 +401,6 @@ export const AccrualTable: React.FC<AccrualTableProps> = ({ taskContext = false 
               <HeaderCell>Type</HeaderCell>
               <HeaderCell>Status</HeaderCell>
               <HeaderCell>Reference</HeaderCell>
-              <HeaderCell align="center">History</HeaderCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -436,16 +415,17 @@ export const AccrualTable: React.FC<AccrualTableProps> = ({ taskContext = false 
               <TableCell>-</TableCell>
               <TableCell>-</TableCell>
               <TableCell>-</TableCell>
-              <TableCell>-</TableCell>
             </TableRow>
 
             {filteredAccruals.map((accrual) => (
               <TableRow
                 key={accrual.entryId}
+                onClick={() => handleShowHistory(accrual)}
                 sx={{
                   backgroundColor: accrual.type === 'Recurring' ? '#f0f7f0' : 'inherit',
                   '&:hover': { 
-                    backgroundColor: accrual.type === 'Recurring' ? '#e6f2e6' : '#f5f5f5' 
+                    backgroundColor: accrual.type === 'Recurring' ? '#e6f2e6' : '#f5f5f5',
+                    cursor: 'pointer'
                   },
                 }}
               >
@@ -465,15 +445,6 @@ export const AccrualTable: React.FC<AccrualTableProps> = ({ taskContext = false 
                   {getStatusDisplay(accrual.status)}
                 </StyledTableCell>
                 <StyledTableCell>{accrual.reference}</StyledTableCell>
-                <StyledTableCell align="center">
-                  <IconButton 
-                    size="small" 
-                    onClick={() => handleShowHistory(accrual)}
-                    title="View History & Recommendations"
-                  >
-                    <HistoryIcon />
-                  </IconButton>
-                </StyledTableCell>
               </TableRow>
             ))}
           </TableBody>
