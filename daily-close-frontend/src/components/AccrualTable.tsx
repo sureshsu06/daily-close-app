@@ -286,12 +286,14 @@ export const AccrualTable: React.FC<AccrualTableProps> = ({ taskContext = false 
     const recurring = filteredAccruals.filter(a => a.type === 'Recurring');
     const variable = filteredAccruals.filter(a => a.type === 'Monthly expense');
     const totalRecommended = filteredAccruals.reduce((sum, a) => sum + a.amount, 0);
-    
+    const highConfidence = filteredAccruals.filter(a => (a.confidence ?? 1) >= 0.8).length;
+    const lowConfidence = filteredAccruals.filter(a => (a.confidence ?? 1) < 0.8).length;
     return {
       recurring: recurring.length,
       variable: variable.length,
       totalRecommended,
-      highConfidence: recurring.length + variable.filter(a => a.amount > 1000).length,
+      highConfidence,
+      lowConfidence,
     };
   }, [filteredAccruals, loading]);
 
@@ -344,7 +346,7 @@ export const AccrualTable: React.FC<AccrualTableProps> = ({ taskContext = false 
           { entryId: 'ACC006', date: '2024-03-15', description: 'Cloud Hosting', vendor: 'AWS', amount: 3200, status: 'pending', type: 'Monthly expense', category: 'Expense', reference: 'CLOUD-2024-03', confidence: 0.90 },
           { entryId: 'ACC007', date: '2024-03-15', description: 'Software Subscriptions', vendor: 'SaaS Solutions', amount: 2100, status: 'pending', type: 'Monthly expense', category: 'Expense', reference: 'SAAS-2024-03', confidence: 0.93 },
           { entryId: 'ACC008', date: '2024-03-15', description: 'Security Services', vendor: 'SecureIT', amount: 1700, status: 'pending', type: 'Monthly expense', category: 'Expense', reference: 'SEC-2024-03', confidence: 0.82 },
-          { entryId: 'ACC009', date: '2024-03-15', description: 'Office Cleaning', vendor: 'CleanCo', amount: 1200, status: 'pending', type: 'Monthly expense', category: 'Expense', reference: 'CLEAN-2024-03', confidence: 0.87 },
+          { entryId: 'ACC009', date: '2024-03-15', description: 'Office Cleaning', vendor: 'CleanCo', amount: 1200, status: 'pending', type: 'Monthly expense', category: 'Expense', reference: 'CLEAN-2024-03', confidence: 0.45 },
           { entryId: 'ACC010', date: '2024-03-15', description: 'IT Support', vendor: 'TechAssist', amount: 2600, status: 'pending', type: 'Monthly expense', category: 'Expense', reference: 'IT-2024-03', confidence: 0.89 },
         ];
         // MOCK DATA END
@@ -416,8 +418,8 @@ export const AccrualTable: React.FC<AccrualTableProps> = ({ taskContext = false 
         <Box component="div" sx={{ mb: 3 }}>
           <Typography variant="body1" gutterBottom>
             There are {recommendations.recurring} recurring and {recommendations.variable} variable service expenses that need to be reviewed for accruals. The total recommended accrual amount is ${recommendations.totalRecommended.toLocaleString()}.
-            
-            Of these recommendations, {recommendations.highConfidence} are of high confidence, given the historical data and past variance. For the others, we recommend checking with the vendors to confirm the amount to be accrued.
+            <br />
+            Of these recommendations, {recommendations.highConfidence} are of high confidence and {recommendations.lowConfidence} are of low confidence, given the historical data and past variance. For the others, we recommend checking with the vendors to confirm the amount to be accrued.
 
           </Typography>
           {hasExceptions && (
