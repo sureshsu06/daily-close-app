@@ -29,7 +29,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "CI=false react-scripts build",
+    "build": "cross-env CI=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -52,7 +52,8 @@
     ]
   },
   "devDependencies": {
-    "@types/papaparse": "^5.3.15"
+    "@types/papaparse": "^5.3.15",
+    "cross-env": "^7.0.3"
   },
   "homepage": "https://shweta0310.github.io/daily-close-app"
 }
