@@ -217,7 +217,7 @@ const TaskQuickView: React.FC<TaskQuickViewProps> = ({ open, onClose, task, isSu
             p: 2,
             mb: 3
           }}>
-            {!isSubtask && (task as DailyCloseTask).step_name === 'Reconcile cash accounts with bank statements' ? (
+            {!isSubtask && ((task as DailyCloseTask).step_name === 'Reconcile cash accounts with bank statements' ? (
               <BankReconciliationTable 
                 onExceptionFound={(transaction) => {
                   console.log('Exception found:', transaction);
@@ -225,11 +225,11 @@ const TaskQuickView: React.FC<TaskQuickViewProps> = ({ open, onClose, task, isSu
               />
             ) : !isSubtask && (task as DailyCloseTask).step_name === 'Extract Stripe daily settlement report with fees and refunds' ? (
               <StripeSettlementTable payments={getMockStripePayments()} />
-            ) : !isSubtask && (task as DailyCloseTask).step_name === 'Record accrued expense' ? (
+            ) : !isSubtask && ((task as DailyCloseTask).step_name === 'Record accrued expense' || (task as DailyCloseTask).step_name === 'Record accruals for services') ? (
               <AccrualTable taskContext={true} />
             ) : (
               <ShopifyOrdersTable orders={getMockShopifyOrders()} />
-            )}
+            ))}
           </Box>
 
           {/* Activity List */}

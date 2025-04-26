@@ -22,6 +22,7 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  Tooltip,
 } from '@mui/material';
 import {
   CheckCircle as CheckCircleIcon,
@@ -32,6 +33,8 @@ import {
   Edit as EditIcon,
   Save as SaveIcon,
   Close as CloseIcon,
+  AttachFile as AttachFileIcon,
+  Email as EmailIcon,
 } from '@mui/icons-material';
 import { AccrualEntry, AccrualSummary, AccrualFilter } from '../types/accrual';
 import { fetchAccruals, getAccrualSummary, createAccrual, updateAccrual } from '../services/accrualService';
@@ -170,17 +173,20 @@ const HistoryModal: React.FC<HistoryModalProps> = ({ open, onClose, accrual }) =
       {
         date: new Date(today.getFullYear(), today.getMonth() - 1, 15).toISOString().split('T')[0],
         amount: accrual.type === 'Recurring' ? baseAmount : baseAmount * (0.9 + Math.random() * 0.2),
-        status: 'complete'
+        status: 'complete',
+        attachmentType: 'file',
       },
       {
         date: new Date(today.getFullYear(), today.getMonth() - 2, 15).toISOString().split('T')[0],
         amount: accrual.type === 'Recurring' ? baseAmount : baseAmount * (0.9 + Math.random() * 0.2),
-        status: 'complete'
+        status: 'complete',
+        attachmentType: 'email',
       },
       {
         date: new Date(today.getFullYear(), today.getMonth() - 3, 15).toISOString().split('T')[0],
         amount: accrual.type === 'Recurring' ? baseAmount : baseAmount * (0.9 + Math.random() * 0.2),
-        status: 'complete'
+        status: 'complete',
+        attachmentType: null,
       }
     ];
   };
@@ -199,7 +205,7 @@ const HistoryModal: React.FC<HistoryModalProps> = ({ open, onClose, accrual }) =
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>History & Recommendations - {accrual.description}</DialogTitle>
+      <DialogTitle>Accruals Working - {accrual.description}</DialogTitle>
       <DialogContent>
         <Box sx={{ mt: 2 }}>
           {/* Recommendation Section */}
@@ -224,6 +230,7 @@ const HistoryModal: React.FC<HistoryModalProps> = ({ open, onClose, accrual }) =
                 <TableCell>Date</TableCell>
                 <TableCell align="right">Amount</TableCell>
                 <TableCell>Status</TableCell>
+                <TableCell>Attachment</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -232,6 +239,18 @@ const HistoryModal: React.FC<HistoryModalProps> = ({ open, onClose, accrual }) =
                   <TableCell>{record.date}</TableCell>
                   <TableCell align="right">${Number(record.amount).toLocaleString()}</TableCell>
                   <TableCell>{record.status}</TableCell>
+                  <TableCell>
+                    {record.attachmentType === 'file' && (
+                      <Tooltip title="File Attachment">
+                        <AttachFileIcon fontSize="small" />
+                      </Tooltip>
+                    )}
+                    {record.attachmentType === 'email' && (
+                      <Tooltip title="Email Attachment">
+                        <EmailIcon fontSize="small" />
+                      </Tooltip>
+                    )}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -254,13 +273,19 @@ export const AccrualTable: React.FC<AccrualTableProps> = ({ taskContext = false 
   const [selectedAccrual, setSelectedAccrual] = useState<AccrualEntry | undefined>(undefined);
   const [historyModalOpen, setHistoryModalOpen] = useState(false);
 
+  const filteredAccruals = accruals.filter(accrual => {
+    if (filter.status && accrual.status !== filter.status) return false;
+    if (filter.type && accrual.type !== filter.type) return false;
+    if (filter.category && accrual.category !== filter.category) return false;
+    return true;
+  });
+
   const recommendations = React.useMemo(() => {
-    if (loading || !accruals.length) return null;
+    if (loading || !filteredAccruals.length) return null;
     
-    const recurring = accruals.filter(a => a.type === 'Recurring');
-    const variable = accruals.filter(a => a.type === 'Monthly expense');
-    const totalRecommended = recurring.reduce((sum, a) => sum + a.amount, 0) + 
-      variable.reduce((sum, a) => sum + a.amount, 0);
+    const recurring = filteredAccruals.filter(a => a.type === 'Recurring');
+    const variable = filteredAccruals.filter(a => a.type === 'Monthly expense');
+    const totalRecommended = filteredAccruals.reduce((sum, a) => sum + a.amount, 0);
     
     return {
       recurring: recurring.length,
@@ -268,7 +293,7 @@ export const AccrualTable: React.FC<AccrualTableProps> = ({ taskContext = false 
       totalRecommended,
       highConfidence: recurring.length + variable.filter(a => a.amount > 1000).length,
     };
-  }, [accruals, loading]);
+  }, [filteredAccruals, loading]);
 
   const handleAddAccrual = () => {
     setSelectedAccrual(undefined);
@@ -309,13 +334,33 @@ export const AccrualTable: React.FC<AccrualTableProps> = ({ taskContext = false 
       try {
         setLoading(true);
         // Load accruals and summary
-        const [accrualData, summaryData] = await Promise.all([
-          fetchAccruals(taskContext),
-          getAccrualSummary(taskContext),
-        ]);
-        
+        // MOCK DATA START
+        const accrualData: AccrualEntry[] = [
+          { entryId: 'ACC001', date: '2024-03-15', description: 'Legal Retainer Fees', vendor: 'Smith & Associates', amount: 5000, status: 'pending', type: 'Monthly expense', category: 'Expense', reference: 'LEGAL-2024-03', confidence: 0.95 },
+          { entryId: 'ACC002', date: '2024-03-15', description: 'Utilities - Electricity', vendor: 'Power Corp', amount: 2800, status: 'pending', type: 'Monthly expense', category: 'Expense', reference: 'UTIL-2024-03', confidence: 0.85 },
+          { entryId: 'ACC003', date: '2024-03-15', description: 'Marketing Services', vendor: 'Digital Marketing Pro', amount: 8500, status: 'pending', type: 'Monthly expense', category: 'Expense', reference: 'MKT-2024-03', confidence: 0.92 },
+          { entryId: 'ACC004', date: '2024-03-15', description: 'Professional Training', vendor: 'Various Training Providers', amount: 4500, status: 'pending', type: 'Monthly expense', category: 'Expense', reference: 'TRN-2024-03', confidence: 0.88 },
+          { entryId: 'ACC005', date: '2024-03-15', description: 'Maintenance Services', vendor: 'Facility Maintenance Co', amount: 1900, status: 'pending', type: 'Monthly expense', category: 'Expense', reference: 'MAINT-2024-03', confidence: 0.80 },
+          { entryId: 'ACC006', date: '2024-03-15', description: 'Cloud Hosting', vendor: 'AWS', amount: 3200, status: 'pending', type: 'Monthly expense', category: 'Expense', reference: 'CLOUD-2024-03', confidence: 0.90 },
+          { entryId: 'ACC007', date: '2024-03-15', description: 'Software Subscriptions', vendor: 'SaaS Solutions', amount: 2100, status: 'pending', type: 'Monthly expense', category: 'Expense', reference: 'SAAS-2024-03', confidence: 0.93 },
+          { entryId: 'ACC008', date: '2024-03-15', description: 'Security Services', vendor: 'SecureIT', amount: 1700, status: 'pending', type: 'Monthly expense', category: 'Expense', reference: 'SEC-2024-03', confidence: 0.82 },
+          { entryId: 'ACC009', date: '2024-03-15', description: 'Office Cleaning', vendor: 'CleanCo', amount: 1200, status: 'pending', type: 'Monthly expense', category: 'Expense', reference: 'CLEAN-2024-03', confidence: 0.87 },
+          { entryId: 'ACC010', date: '2024-03-15', description: 'IT Support', vendor: 'TechAssist', amount: 2600, status: 'pending', type: 'Monthly expense', category: 'Expense', reference: 'IT-2024-03', confidence: 0.89 },
+        ];
+        // MOCK DATA END
+        // const [accrualData, summaryData] = await Promise.all([
+        //   fetchAccruals(taskContext),
+        //   getAccrualSummary(taskContext),
+        // ]);
         setAccruals(accrualData);
-        setSummary(summaryData);
+        setSummary({
+          totalAccruals: accrualData.length,
+          totalAmount: accrualData.reduce((sum, acc) => sum + acc.amount, 0),
+          pendingCount: accrualData.filter(acc => acc.status === 'pending').length,
+          reviewCount: accrualData.filter(acc => acc.status === 'review').length,
+          exceptionCount: accrualData.filter(acc => acc.status === 'exception').length,
+          lastUpdated: new Date().toISOString(),
+        });
       } catch (error) {
         console.error('Error loading accrual data:', error);
       } finally {
@@ -365,22 +410,15 @@ export const AccrualTable: React.FC<AccrualTableProps> = ({ taskContext = false 
 
   const hasExceptions = summary?.exceptionCount && summary.exceptionCount > 0;
 
-  const filteredAccruals = accruals.filter(accrual => {
-    if (filter.status && accrual.status !== filter.status) return false;
-    if (filter.type && accrual.type !== filter.type) return false;
-    if (filter.category && accrual.category !== filter.category) return false;
-    return true;
-  });
-
   return (
     <Box>
       {recommendations && (
         <Box component="div" sx={{ mb: 3 }}>
           <Typography variant="body1" gutterBottom>
-            Based on historical patterns, there are {recommendations.recurring} recurring and {recommendations.variable} variable expenses recommended for accrual. 
-            {recommendations.highConfidence} of these recommendations have high confidence. 
-            The total recommended accrual amount is ${recommendations.totalRecommended.toLocaleString()}.
-            Click the history icon to see detailed recommendations.
+            There are {recommendations.recurring} recurring and {recommendations.variable} variable service expenses that need to be reviewed for accruals. The total recommended accrual amount is ${recommendations.totalRecommended.toLocaleString()}.
+            
+            Of these recommendations, {recommendations.highConfidence} are of high confidence, given the historical data and past variance. For the others, we recommend checking with the vendors to confirm the amount to be accrued.
+
           </Typography>
           {hasExceptions && (
             <Alert severity="warning" sx={{ mt: 2 }}>
@@ -397,29 +435,27 @@ export const AccrualTable: React.FC<AccrualTableProps> = ({ taskContext = false 
               <HeaderCell>Date</HeaderCell>
               <HeaderCell>Description</HeaderCell>
               <HeaderCell>Vendor</HeaderCell>
-              <HeaderCell align="right">Amount</HeaderCell>
-              <HeaderCell>Type</HeaderCell>
+              <HeaderCell align="right">Estimated Accrual</HeaderCell>
               <HeaderCell>Status</HeaderCell>
-              <HeaderCell>Reference</HeaderCell>
+              <HeaderCell>Confidence</HeaderCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {/* Total Row */}
             <TableRow sx={{ backgroundColor: (theme) => theme.palette.grey[100] }}>
               <TableCell>-</TableCell>
-              <TableCell sx={{ fontWeight: 600 }}>Total Monthly Expenses</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Services Monthly Accruals</TableCell>
               <TableCell>-</TableCell>
               <TableCell align="right" sx={{ fontWeight: 600 }}>
                 ${filteredAccruals.reduce((sum, acc) => sum + acc.amount, 0).toLocaleString()}
               </TableCell>
               <TableCell>-</TableCell>
               <TableCell>-</TableCell>
-              <TableCell>-</TableCell>
             </TableRow>
 
-            {filteredAccruals.map((accrual) => (
+            {filteredAccruals.map((accrual, idx) => (
               <TableRow
-                key={accrual.entryId}
+                key={accrual.entryId || idx}
                 onClick={() => handleShowHistory(accrual)}
                 sx={{
                   backgroundColor: accrual.type === 'Recurring' ? '#f0f7f0' : 'inherit',
@@ -433,18 +469,10 @@ export const AccrualTable: React.FC<AccrualTableProps> = ({ taskContext = false 
                 <StyledTableCell>{accrual.description}</StyledTableCell>
                 <StyledTableCell>{accrual.vendor}</StyledTableCell>
                 <StyledTableCell align="right">${accrual.amount.toLocaleString()}</StyledTableCell>
-                <StyledTableCell>
-                  <Chip 
-                    label={accrual.type}
-                    size="small"
-                    color={accrual.type === 'Recurring' ? 'success' : 'primary'}
-                    variant="outlined"
-                  />
-                </StyledTableCell>
                 <StyledTableCell align="center">
                   {getStatusDisplay(accrual.status)}
                 </StyledTableCell>
-                <StyledTableCell>{accrual.reference}</StyledTableCell>
+                <StyledTableCell>{accrual.confidence !== undefined ? (accrual.confidence * 100).toFixed(0) + '%' : '-'}</StyledTableCell>
               </TableRow>
             ))}
           </TableBody>

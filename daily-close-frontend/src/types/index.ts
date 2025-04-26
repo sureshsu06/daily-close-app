@@ -53,6 +53,7 @@ export interface BankTransaction {
   creditLimit?: number;
   currentBalance?: number;
   glAccount?: string;
+  matchedGLEntries?: string[];
 }
 
 export interface GLEntry {
@@ -64,6 +65,7 @@ export interface GLEntry {
   accountNumber: string;
   reference: string;
   matchedBankTransaction?: string;
+  matchedBankTransactions?: string[];
   status: 'cleared' | 'review' | 'exception';
 }
 

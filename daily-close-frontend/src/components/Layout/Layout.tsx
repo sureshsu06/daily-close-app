@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Sidebar from './Sidebar';
@@ -30,13 +30,15 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ tasks, children, onTaskSelect }) => {
+  const [isChatOpen, setIsChatOpen] = useState(true);
+
   return (
     <LayoutContainer>
       <Sidebar tasks={tasks} onTaskSelect={onTaskSelect} selectedTask={null} />
       <MainContent>
         {children}
       </MainContent>
-      <ChatPanel />
+      {isChatOpen && <ChatPanel onClose={() => setIsChatOpen(false)} />}
     </LayoutContainer>
   );
 };

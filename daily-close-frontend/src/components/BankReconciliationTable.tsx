@@ -26,6 +26,9 @@ import {
   CheckCircle as CheckCircleIcon,
   Error as ErrorIcon,
   CloudUpload,
+  ExpandMore as ExpandMoreIcon,
+  ChevronRight as ChevronRightIcon,
+  KeyboardArrowDown as KeyboardArrowDownIcon,
 } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import { BankTransaction, GLEntry, ReconciliationSummary } from '../types';
@@ -90,7 +93,7 @@ const StyledFormControl = styled(FormControl)(({ theme }) => ({
   padding: 0,
   '& .MuiOutlinedInput-root': {
     height: '40px',
-    fontSize: '13px',
+    fontSize: '15px',
     backgroundColor: '#fff',
     margin: 0,
     '& .MuiSelect-select': {
@@ -107,7 +110,12 @@ const StyledFormControl = styled(FormControl)(({ theme }) => ({
     },
   },
   '& .MuiMenuItem-root': {
-    fontSize: '13px',
+    fontSize: '15px',
+    padding: '6px 14px',
+    height: '32px'
+  },
+  '& .MuiList-root': {
+    padding: '4px 0'
   }
 }));
 
@@ -135,7 +143,9 @@ const SummaryText = styled(Typography)(({ theme }) => ({
   fontSize: '14px',
   lineHeight: 1.6,
   color: theme.palette.text.primary,
-  width: '700px',
+  maxWidth: '700px',
+  marginLeft: theme.spacing(4),
+  flex: '1 1 auto',
   '& .highlight': {
     fontWeight: 600,
     color: theme.palette.text.primary,
@@ -147,6 +157,9 @@ interface StyledTableRowProps {
 }
 
 const StyledTableRow = styled(TableRow)<StyledTableRowProps>(({ theme, highlighted }) => ({
+  '&:not(:last-child) td, &:not(:last-child) th': {
+    borderBottom: '1px solid #eee',
+  },
   '&:last-child td, &:last-child th': {
     borderBottom: 0,
   },
@@ -176,6 +189,14 @@ const HeaderCell = styled(TableCell)(({ theme }) => ({
   padding: '16px 8px',
   fontWeight: 600,
   fontSize: '13px',
+  '&.date-column': {
+    textAlign: 'left !important'
+  }
+}));
+
+const DateCell = styled(TableCell)(({ theme }) => ({
+  textAlign: 'left',
+  padding: '16px 8px',
 }));
 
 const SmallButton = styled(Button)(({ theme }) => ({
@@ -184,6 +205,53 @@ const SmallButton = styled(Button)(({ theme }) => ({
   height: '32px',
   '& .MuiSvgIcon-root': {
     fontSize: '18px',
+  },
+}));
+
+const SummaryTable = styled(Table)(({ theme }) => ({
+  '& .MuiTableCell-root': {
+    padding: '8px',
+    borderBottom: 'none',
+  },
+  '& .MuiTableRow-root': {
+    backgroundColor: '#fff',
+  },
+  '& .MuiTableHead-root .MuiTableRow-root': {
+    '& .MuiTableCell-root': {
+      borderBottom: `1px solid ${theme.palette.grey[300]}`,
+      paddingBottom: '8px',
+    }
+  },
+  '& .MuiTableBody-root .MuiTableRow-root:first-of-type': {
+    '& .MuiTableCell-root': {
+      paddingTop: '12px',
+    }
+  },
+  '& .summary-label': {
+    fontWeight: 600,
+    fontSize: '13px',
+  },
+  '& .summary-value': {
+    fontSize: '13px',
+    textAlign: 'right',
+  },
+  '& .subcategory': {
+    paddingLeft: theme.spacing(4),
+  }
+}));
+
+const ExpandButton = styled('button')(({ theme }) => ({
+  background: 'none',
+  border: 'none',
+  padding: 0,
+  margin: 0,
+  cursor: 'pointer',
+  display: 'inline-flex',
+  alignItems: 'center',
+  color: theme.palette.text.primary,
+  minWidth: 0,
+  '&:hover': {
+    opacity: 0.7,
   },
 }));
 
@@ -203,32 +271,21 @@ export const BankReconciliationTable: React.FC<BankReconciliationTableProps> = (
   const [highlightedBankTransaction, setHighlightedBankTransaction] = useState<string | null>(null);
   const [selectedTransaction, setSelectedTransaction] = useState<BankTransaction | GLEntry | null>(null);
   const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
-  const [showUpload, setShowUpload] = useState(true);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
+  const [awsExpand, setAwsExpand] = useState(false);
   const tableContainerRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Load initial GL entries only
+    // Load initial data
     const entries = getMockGLEntries();
+    const transactions = getMockBankTransactions().map(transaction => ({
+      ...transaction,
+      status: transaction.status === 'review' ? 'exception' : transaction.status
+    }));
     setGLEntries(entries);
-  }, []);
-
-  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    // In a real app, we would process the CSV file here
-    // For now, we'll just simulate loading the bank transactions
-    const transactions = getMockBankTransactions();
     setBankTransactions(transactions);
-    setSummary(getReconciliationSummary(transactions, glEntries));
-    setShowUpload(false);
-    
-    // Reset the file input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
+    setSummary(getReconciliationSummary(transactions, entries));
+  }, []);
 
   useEffect(() => {
     // Scroll to highlighted row when it changes
@@ -344,120 +401,83 @@ export const BankReconciliationTable: React.FC<BankReconciliationTableProps> = (
     }
   };
 
-  if (showUpload) {
-    return (
-      <Box>
-        {/* Top Section with Filter and Toggle */}
-        <Box sx={{ 
-          display: 'flex',
-          gap: 3,
-          mb: 3,
-        }}>
-          {/* Left side with Filter */}
-          <Box sx={{ flex: 1 }}>
-            <Box sx={{ mb: 2 }}>
-              <StyledFormControl>
-                <InputLabel id="status-filter-label">Filter by Status</InputLabel>
-                <Select
-                  labelId="status-filter-label"
-                  value={selectedFilter}
-                  onChange={(e) => setSelectedFilter(e.target.value as TransactionStatus | 'all')}
-                  label="Filter by Status"
-                >
-                  <MenuItem value="all">All Transactions</MenuItem>
-                  <MenuItem value="cleared">Matched</MenuItem>
-                  <MenuItem value="review">For Review</MenuItem>
-                  <MenuItem value="exception">Exceptions</MenuItem>
-                </Select>
-              </StyledFormControl>
-            </Box>
+  const isTransactionWithStatus = (status: TransactionStatus) => (t: BankTransaction | GLEntry) => t.status === status;
 
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <ViewToggle
-                value={viewType}
-                exclusive
-                onChange={(_, newValue) => newValue && setViewType(newValue)}
-                aria-label="view type"
-              >
-                <ToggleButton 
-                  value="bank" 
-                  onClick={showUpload ? () => fileInputRef.current?.click() : undefined}
-                >
-                  {showUpload && <CloudUpload sx={{ fontSize: 18 }} />}
-                  Bank
-                </ToggleButton>
-                <ToggleButton value="gl">GL</ToggleButton>
-              </ViewToggle>
+  const getFilteredAmount = (
+    items: (BankTransaction | GLEntry)[],
+    status: TransactionStatus
+  ): number => {
+    return getTotalAmount(items.filter(item => item.status === status));
+  };
 
-              <input
-                type="file"
-                accept=".csv"
-                ref={fileInputRef}
-                onChange={handleFileSelect}
-                style={{ display: 'none' }}
-              />
-            </Box>
-          </Box>
+  const getPercentage = (amount: number, total: number): string => {
+    return total === 0 ? '0%' : `${((amount / total) * 100).toFixed(1)}%`;
+  };
 
-          {/* Right side Summary Text */}
-          <SummaryText>
-            Viewing GL entries. Upload bank statement to start reconciliation process.
-          </SummaryText>
-        </Box>
+  const getFilterSummary = (
+    transactions: (BankTransaction | GLEntry)[],
+    filter: TransactionStatus | 'all',
+    viewType: 'bank' | 'gl'
+  ): string => {
+    const totalValue = getTotalAmount(transactions);
+    const clearedValue = getFilteredAmount(transactions, 'cleared');
+    const reviewValue = getFilteredAmount(transactions, 'review');
+    const exceptionValue = getFilteredAmount(transactions, 'exception');
+    
+    const formatAmount = (amount: number) => `$${amount.toLocaleString()}`;
+    const formatPercentage = (amount: number) => `${((amount / totalValue) * 100).toFixed(1)}%`;
+    const viewTypeLabel = viewType === 'bank' ? 'bank transactions' : 'GL entries';
 
-        <StyledTableContainer ref={tableContainerRef}>
-          <Paper>
-            <Table stickyHeader>
-              <TableHead>
-                <TableRow>
-                  <HeaderCell sx={{ width: '100px' }}>Date</HeaderCell>
-                  <HeaderCell sx={{ width: '35%' }}>Description</HeaderCell>
-                  <HeaderCell sx={{ width: '100px' }} align="right">Amount</HeaderCell>
-                  <HeaderCell sx={{ width: '60px' }}>Type</HeaderCell>
-                  <HeaderCell sx={{ width: '100px' }}>Status</HeaderCell>
-                  <HeaderCell sx={{ width: '100px' }}>Account</HeaderCell>
-                  <HeaderCell sx={{ width: '100px' }}>Reference</HeaderCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <StyledTableRow sx={{ backgroundColor: (theme) => theme.palette.grey[100] }}>
-                  <TableCell>-</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Total</TableCell>
-                  <TableCell align="right" sx={{ fontWeight: 600 }}>
-                    ${getTotalAmount(glEntries).toLocaleString()}
-                  </TableCell>
-                  <TableCell>-</TableCell>
-                  <TableCell>-</TableCell>
-                  <TableCell>-</TableCell>
-                  <TableCell>-</TableCell>
-                </StyledTableRow>
-                {glEntries.map((entry) => (
-                  <StyledTableRow
-                    key={entry.entryId}
-                    data-entry-id={entry.entryId}
-                  >
-                    <TableCell>{entry.date}</TableCell>
-                    <TableCell>{entry.description}</TableCell>
-                    <TableCell align="right">${entry.amount.toLocaleString()}</TableCell>
-                    <TableCell>{formatTransactionType(entry.type)}</TableCell>
-                    <TableCell>
-                      <StatusChip
-                        icon={getStatusIcon(entry.status as TransactionStatus)}
-                        label={entry.status}
-                        status={entry.status as TransactionStatus}
-                      />
-                    </TableCell>
-                    <TableCell>{entry.accountNumber}</TableCell>
-                    <TableCell>{entry.reference}</TableCell>
-                  </StyledTableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </Paper>
-        </StyledTableContainer>
-      </Box>
+    const getMaterialityAnalysis = () => {
+      const unmatched = reviewValue + exceptionValue;
+      const unmatchedPercent = ((unmatched / totalValue) * 100);
+      
+      if (unmatchedPercent <= 5) {
+        return `Discrepancies are not material (${formatPercentage(unmatched)} of total value).`;
+      } else if (unmatchedPercent <= 15) {
+        return `Timing differences and pending items account for ${formatPercentage(reviewValue)} of transactions, with ${formatPercentage(exceptionValue)} requiring investigation.`;
+      } else {
+        return `Significant reconciliation needed with ${formatPercentage(unmatched)} of transactions unmatched, primarily due to timing differences and pending classifications.`;
+      }
+    };
+
+    switch (filter) {
+      case 'cleared':
+        return `Matched ${viewTypeLabel} total ${formatAmount(clearedValue)}, representing ${formatPercentage(clearedValue)} of total value. ${getMaterialityAnalysis()}`;
+      case 'review':
+        return `${viewTypeLabel} under review total ${formatAmount(reviewValue)} (${formatPercentage(reviewValue)} of total value), primarily due to timing differences and pending classifications. Most items are expected to clear in the next cycle.`;
+      case 'exception':
+        return `Exception ${viewTypeLabel} total ${formatAmount(exceptionValue)} (${formatPercentage(exceptionValue)} of total value), requiring immediate investigation. These items represent potential misclassifications or unusual transactions.`;
+      default:
+        return `Of ${formatAmount(totalValue)} in ${viewTypeLabel}, ${formatPercentage(clearedValue)} is matched while ${formatPercentage(reviewValue + exceptionValue)} requires attention. ${getMaterialityAnalysis()}`;
+    }
+  };
+
+  // Helper to detect the AWS $0.5 difference row
+  const isAwsDiffRow = (transaction: BankTransaction) => {
+    const matchingEntry = glEntries.find(
+      entry => entry.matchedBankTransaction === transaction.transactionId
     );
-  }
+    return (
+      transaction.description === 'AMZN AWS CLOUD PMT 1876.50 USD ACH' &&
+      matchingEntry &&
+      matchingEntry.description === 'AWS Cloud Services - Monthly hosting' &&
+      Math.abs((matchingEntry.amount || 0) - (transaction.amount || 0)) === 0.5
+    );
+  };
+
+  // Helper to detect the AWS $0.5 difference row for GL
+  const isAwsDiffRowGL = (entry: GLEntry) => {
+    const matchingBank = bankTransactions.find(
+      t => t.transactionId === entry.matchedBankTransaction
+    );
+    return (
+      entry.description === 'AWS Cloud Services - Monthly hosting' &&
+      matchingBank &&
+      matchingBank.description === 'AMZN AWS CLOUD PMT 1876.50 USD ACH' &&
+      Math.abs((entry.amount || 0) - (matchingBank.amount || 0)) === 0.5
+    );
+  };
 
   if (!summary) {
     return <Typography>Loading...</Typography>;
@@ -471,11 +491,11 @@ export const BankReconciliationTable: React.FC<BankReconciliationTableProps> = (
       {/* Top Section with Filter, Toggle, and Summary */}
       <Box sx={{ 
         display: 'flex',
-        gap: 3,
+        alignItems: 'flex-start',
         mb: 3,
       }}>
         {/* Left side with Filter and Toggle */}
-        <Box sx={{ flex: 1 }}>
+        <Box sx={{ minWidth: '250px' }}>
           <Box sx={{ 
             display: 'flex', 
             alignItems: 'flex-start',
@@ -503,35 +523,148 @@ export const BankReconciliationTable: React.FC<BankReconciliationTableProps> = (
             onChange={(_, newValue) => newValue && setViewType(newValue)}
             aria-label="view type"
           >
-            <ToggleButton 
-              value="bank" 
-              onClick={showUpload ? () => fileInputRef.current?.click() : undefined}
-            >
-              {showUpload && <CloudUpload sx={{ fontSize: 18 }} />}
-              Bank
-            </ToggleButton>
+            <ToggleButton value="bank">Bank</ToggleButton>
             <ToggleButton value="gl">GL</ToggleButton>
           </ViewToggle>
         </Box>
 
         {/* Right side Summary Text */}
         <SummaryText>
-          The bank reconciliation process has processed <span className="highlight">{stats.totalTransactions} transactions</span> with a total value of <span className="highlight">${stats.totalAmount}</span>, achieving a robust <span className="highlight">{stats.matchRate}% match rate</span>. Currently monitoring <span className="highlight">{stats.reviewTransactions} transactions</span> for review and <span className="highlight">{stats.exceptionTransactions} exceptions</span> requiring immediate attention. 
+          {getFilterSummary(
+            viewType === 'bank' ? filteredTransactions : filteredGLEntries,
+            selectedFilter,
+            viewType
+          )}
         </SummaryText>
       </Box>
 
-      {summary.exceptionsCount > 0 && (
+      {(bankTransactions.filter(t => t.status === 'exception').length + 
+        glEntries.filter(e => e.status === 'exception').length) > 0 && (
         <Alert severity="warning" sx={{ mb: 2 }}>
-          There are {summary.exceptionsCount} transactions that require attention
+          There are {bankTransactions.filter(t => t.status === 'exception').length + 
+          glEntries.filter(e => e.status === 'exception').length} transactions that require attention
         </Alert>
       )}
+
+      <Paper sx={{ mb: 2 }}>
+        <SummaryTable>
+          <TableHead>
+            <TableRow>
+              <HeaderCell sx={{ width: '45%' }}>Category</HeaderCell>
+              <HeaderCell sx={{ width: '100px', paddingRight: '24px' }} align="right">Value</HeaderCell>
+              <HeaderCell sx={{ width: '60px' }} align="right">%</HeaderCell>
+              <HeaderCell sx={{ width: '60px' }}></HeaderCell>
+              {viewType === 'bank' ? (
+                <>
+                  <HeaderCell sx={{ width: '80px' }}></HeaderCell>
+                  <HeaderCell sx={{ width: '80px' }}></HeaderCell>
+                </>
+              ) : (
+                <>
+                  <HeaderCell sx={{ width: '100px' }}></HeaderCell>
+                  <HeaderCell sx={{ width: '100px' }}></HeaderCell>
+                </>
+              )}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {/* Total row */}
+            <TableRow>
+              <TableCell className="summary-label">
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <ExpandButton onClick={() => setIsSummaryExpanded(!isSummaryExpanded)}>
+                    {isSummaryExpanded ? (
+                      <ExpandMoreIcon sx={{ fontSize: 20 }} />
+                    ) : (
+                      <ChevronRightIcon sx={{ fontSize: 20 }} />
+                    )}
+                  </ExpandButton>
+                  Total Transactions
+                </Box>
+              </TableCell>
+              <TableCell className="summary-value" sx={{ paddingRight: '24px' }}>
+                ${getTotalAmount(viewType === 'bank' ? filteredTransactions : filteredGLEntries).toLocaleString()}
+              </TableCell>
+              <TableCell className="summary-value">100%</TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+            </TableRow>
+            
+            {isSummaryExpanded && (
+              <>
+                {/* Cleared row */}
+                <TableRow>
+                  <TableCell className="summary-label subcategory">Cleared</TableCell>
+                  <TableCell className="summary-value" sx={{ paddingRight: '24px' }}>
+                    ${getFilteredAmount(
+                      viewType === 'bank' ? filteredTransactions : filteredGLEntries,
+                      'cleared'
+                    ).toLocaleString()}
+                  </TableCell>
+                  <TableCell className="summary-value">
+                    {getPercentage(
+                      getFilteredAmount(viewType === 'bank' ? filteredTransactions : filteredGLEntries, 'cleared'),
+                      getTotalAmount(viewType === 'bank' ? filteredTransactions : filteredGLEntries)
+                    )}
+                  </TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
+
+                {/* For Review row */}
+                <TableRow>
+                  <TableCell className="summary-label subcategory">For Review</TableCell>
+                  <TableCell className="summary-value" sx={{ paddingRight: '24px' }}>
+                    ${getFilteredAmount(
+                      viewType === 'bank' ? filteredTransactions : filteredGLEntries,
+                      'review'
+                    ).toLocaleString()}
+                  </TableCell>
+                  <TableCell className="summary-value">
+                    {getPercentage(
+                      getFilteredAmount(viewType === 'bank' ? filteredTransactions : filteredGLEntries, 'review'),
+                      getTotalAmount(viewType === 'bank' ? filteredTransactions : filteredGLEntries)
+                    )}
+                  </TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
+
+                {/* Exceptions row */}
+                <TableRow>
+                  <TableCell className="summary-label subcategory">Exceptions</TableCell>
+                  <TableCell className="summary-value" sx={{ paddingRight: '24px' }}>
+                    ${getFilteredAmount(
+                      viewType === 'bank' ? filteredTransactions : filteredGLEntries,
+                      'exception'
+                    ).toLocaleString()}
+                  </TableCell>
+                  <TableCell className="summary-value">
+                    {getPercentage(
+                      getFilteredAmount(viewType === 'bank' ? filteredTransactions : filteredGLEntries, 'exception'),
+                      getTotalAmount(viewType === 'bank' ? filteredTransactions : filteredGLEntries)
+                    )}
+                  </TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
+              </>
+            )}
+          </TableBody>
+        </SummaryTable>
+      </Paper>
 
       <StyledTableContainer ref={tableContainerRef}>
         <Paper>
           <Table stickyHeader>
             <TableHead>
               <TableRow>
-                <HeaderCell sx={{ width: '100px' }}>Date</HeaderCell>
+                <HeaderCell sx={{ width: '24px', minWidth: '24px', maxWidth: '24px', padding: 0, textAlign: 'center' }}></HeaderCell>
+                <HeaderCell sx={{ width: '100px', textAlign: 'left !important' }}>Date</HeaderCell>
                 <HeaderCell sx={{ width: '35%' }}>Description</HeaderCell>
                 <HeaderCell sx={{ width: '100px' }} align="right">Amount</HeaderCell>
                 <HeaderCell sx={{ width: '60px' }}>Type</HeaderCell>
@@ -539,7 +672,7 @@ export const BankReconciliationTable: React.FC<BankReconciliationTableProps> = (
                 {viewType === 'bank' && (
                   <>
                     <HeaderCell sx={{ width: '80px' }}>Ref #</HeaderCell>
-                    <HeaderCell sx={{ width: '80px' }} align="center">GL</HeaderCell>
+                    <HeaderCell sx={{ width: '120px' }} align="center">GL</HeaderCell>
                   </>
                 )}
                 {viewType === 'gl' && (
@@ -552,126 +685,172 @@ export const BankReconciliationTable: React.FC<BankReconciliationTableProps> = (
             </TableHead>
             <TableBody>
               {viewType === 'bank' ? (
-                <>
-                  <StyledTableRow sx={{ backgroundColor: (theme) => theme.palette.grey[100] }}>
-                    <TableCell>-</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>Total</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: 600 }}>
-                      ${getTotalAmount(filteredTransactions).toLocaleString()}
-                    </TableCell>
-                    <TableCell>-</TableCell>
-                    <TableCell>-</TableCell>
-                    <TableCell>-</TableCell>
-                    <TableCell align="right">-</TableCell>
-                  </StyledTableRow>
-                  {filteredTransactions.map((transaction) => (
-                    <StyledTableRow
-                      key={transaction.transactionId}
-                      highlighted={transaction.transactionId === highlightedBankTransaction}
-                      data-transaction-id={transaction.transactionId}
-                      onClick={() => handleTransactionClick(transaction)}
-                      sx={{
-                        backgroundColor:
-                          transaction.status === 'exception' ? 'error.lighter' : 'inherit',
-                        cursor: transaction.status === 'review' || transaction.status === 'exception' 
-                          ? 'pointer' 
-                          : 'default',
-                        '&:hover': {
-                          backgroundColor: transaction.status === 'review' || transaction.status === 'exception'
-                            ? 'rgba(0, 0, 0, 0.04)'
-                            : 'inherit',
-                        },
-                      }}
-                    >
-                      <TableCell>{transaction.date}</TableCell>
-                      <TableCell>{transaction.description}</TableCell>
-                      <TableCell align="right">
-                        ${transaction.amount.toLocaleString()}
-                      </TableCell>
-                      <TableCell>{formatTransactionType(transaction.type)}</TableCell>
-                      <TableCell>
-                        <StatusChip
-                          icon={getStatusIcon(transaction.status as TransactionStatus)}
-                          label={transaction.status}
-                          status={transaction.status}
-                        />
-                      </TableCell>
-                      <TableCell>{transaction.checkNumber || transaction.transactionId}</TableCell>
-                      <TableCell align="right">
-                        {transaction.glAccountMatched ? (
-                          <GLLink
-                            onClick={() => {
-                              const matchingEntry = glEntries.find(
-                                entry => entry.matchedBankTransaction === transaction.transactionId
+                filteredTransactions.map((transaction) => {
+                  const awsDiff = isAwsDiffRow(transaction);
+                  return (
+                    <React.Fragment key={transaction.transactionId}>
+                      <StyledTableRow
+                        highlighted={transaction.transactionId === highlightedBankTransaction}
+                        data-transaction-id={transaction.transactionId}
+                        onClick={() => handleTransactionClick(transaction)}
+                        sx={{
+                          backgroundColor:
+                            transaction.status === 'exception' ? 'error.lighter' : 'inherit',
+                          cursor: transaction.status === 'review' || transaction.status === 'exception' 
+                            ? 'pointer' 
+                            : 'default',
+                          '&:hover': {
+                            backgroundColor: transaction.status === 'review' || transaction.status === 'exception'
+                              ? 'rgba(0, 0, 0, 0.04)'
+                              : 'inherit',
+                          },
+                        }}
+                      >
+                        <TableCell sx={{ width: '24px', minWidth: '24px', maxWidth: '24px', padding: 0, textAlign: 'center' }}>
+                          {awsDiff && (
+                            <ExpandButton
+                              onClick={e => {
+                                e.stopPropagation();
+                                setAwsExpand(val => !val);
+                              }}
+                              style={{ color: 'red' }}
+                              aria-label="expand AWS diff row"
+                            >
+                              {awsExpand ? <ExpandMoreIcon /> : <ChevronRightIcon />}
+                            </ExpandButton>
+                          )}
+                        </TableCell>
+                        <TableCell sx={{ textAlign: 'left !important' }}>{transaction.date}</TableCell>
+                        <TableCell sx={{ display: 'flex', alignItems: 'center' }}>{transaction.description}</TableCell>
+                        <TableCell align="right">
+                          ${transaction.amount.toLocaleString()}
+                        </TableCell>
+                        <TableCell>{formatTransactionType(transaction.type)}</TableCell>
+                        <TableCell>
+                          <StatusChip
+                            icon={getStatusIcon(transaction.status as TransactionStatus)}
+                            label={transaction.status}
+                            status={transaction.status}
+                          />
+                        </TableCell>
+                        <TableCell>{transaction.checkNumber || transaction.transactionId}</TableCell>
+                        <TableCell align="right" sx={{ whiteSpace: 'nowrap', maxWidth: 140 }}>
+                          {Array.isArray(transaction.matchedGLEntries) && transaction.matchedGLEntries?.length > 1 ? (
+                            transaction.matchedGLEntries.map((glId, idx) => {
+                              const matchingEntry = glEntries.find(entry => entry.entryId === glId);
+                              return (
+                                <React.Fragment key={glId}>
+                                  <GLLink
+                                    style={{ display: 'inline' }}
+                                    onClick={e => {
+                                      e.stopPropagation();
+                                      if (matchingEntry) handleGLClick(matchingEntry.entryId);
+                                    }}
+                                  >
+                                    {matchingEntry ? matchingEntry.accountNumber : glId}
+                                  </GLLink>
+                                  {idx < (transaction.matchedGLEntries?.length ?? 0) - 1 && ', '}
+                                </React.Fragment>
                               );
-                              if (matchingEntry) {
-                                handleGLClick(matchingEntry.entryId);
-                              }
-                            }}
-                          >
-                            {transaction.glAccount}
-                          </GLLink>
-                        ) : '-'}
-                      </TableCell>
-                    </StyledTableRow>
-                  ))}
-                </>
+                            })
+                          ) : transaction.glAccountMatched ? (
+                            <GLLink
+                              onClick={() => {
+                                const matchingEntry = glEntries.find(
+                                  entry => entry.matchedBankTransaction === transaction.transactionId
+                                );
+                                if (matchingEntry) {
+                                  handleGLClick(matchingEntry.entryId);
+                                }
+                              }}
+                            >
+                              {transaction.glAccount}
+                            </GLLink>
+                          ) : '-'}
+                        </TableCell>
+                      </StyledTableRow>
+                      {awsDiff && awsExpand && (
+                        <TableRow>
+                          <TableCell colSpan={8}>
+                            <Box sx={{ color: 'grey', fontWeight: 300, pl: 6, py: 1, fontStyle: 'italic' }}>
+                              $0.5 difference b/w GL and bank. Recommend passing adjusting entry. Not material.
+                            </Box>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </React.Fragment>
+                  );
+                })
               ) : (
-                <>
-                  <StyledTableRow sx={{ backgroundColor: (theme) => theme.palette.grey[100] }}>
-                    <TableCell>-</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>Total</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: 600 }}>
-                      ${getTotalAmount(filteredGLEntries).toLocaleString()}
-                    </TableCell>
-                    <TableCell>-</TableCell>
-                    <TableCell>-</TableCell>
-                    <TableCell>-</TableCell>
-                    <TableCell>-</TableCell>
-                  </StyledTableRow>
-                  {filteredGLEntries.map((entry) => (
-                    <StyledTableRow
-                      key={entry.entryId}
-                      highlighted={entry.entryId === highlightedGLEntry}
-                      data-entry-id={entry.entryId}
-                      onClick={() => handleTransactionClick(entry)}
-                      sx={{
-                        cursor: entry.status === 'review' || entry.status === 'exception' 
-                          ? 'pointer' 
-                          : 'default',
-                        '&:hover': {
-                          backgroundColor: entry.status === 'review' || entry.status === 'exception'
-                            ? 'rgba(0, 0, 0, 0.04)'
-                            : 'inherit',
-                        },
-                      }}
-                    >
-                      <TableCell>{entry.date}</TableCell>
-                      <TableCell>{entry.description}</TableCell>
-                      <TableCell align="right">
-                        ${entry.amount.toLocaleString()}
-                      </TableCell>
-                      <TableCell>{formatTransactionType(entry.type)}</TableCell>
-                      <TableCell>
-                        <StatusChip
-                          icon={getStatusIcon(entry.status as TransactionStatus)}
-                          label={entry.status}
-                          status={entry.status}
-                        />
-                      </TableCell>
-                      <TableCell>{entry.accountNumber}</TableCell>
-                      <TableCell>
-                        {entry.matchedBankTransaction && entry.status === 'cleared' ? (
-                          <GLLink
-                            onClick={() => handleBankClick(entry.matchedBankTransaction!)}
-                          >
-                            {entry.reference}
-                          </GLLink>
-                        ) : entry.reference}
-                      </TableCell>
-                    </StyledTableRow>
-                  ))}
-                </>
+                filteredGLEntries.map((entry) => {
+                  const awsDiffGL = isAwsDiffRowGL(entry);
+                  return (
+                    <React.Fragment key={entry.entryId}>
+                      <StyledTableRow
+                        highlighted={entry.entryId === highlightedGLEntry}
+                        data-entry-id={entry.entryId}
+                        onClick={() => handleTransactionClick(entry)}
+                        sx={{
+                          cursor: entry.status === 'review' || entry.status === 'exception' 
+                            ? 'pointer' 
+                            : 'default',
+                          '&:hover': {
+                            backgroundColor: entry.status === 'review' || entry.status === 'exception'
+                              ? 'rgba(0, 0, 0, 0.04)'
+                              : 'inherit',
+                          },
+                        }}
+                      >
+                        <TableCell sx={{ width: '24px', minWidth: '24px', maxWidth: '24px', padding: 0, textAlign: 'center' }}>
+                          {awsDiffGL && (
+                            <ExpandButton
+                              onClick={e => {
+                                e.stopPropagation();
+                                setAwsExpand(val => !val);
+                              }}
+                              style={{ color: 'red' }}
+                              aria-label="expand AWS diff row GL"
+                            >
+                              {awsExpand ? <ExpandMoreIcon /> : <ChevronRightIcon />}
+                            </ExpandButton>
+                          )}
+                        </TableCell>
+                        <TableCell sx={{ textAlign: 'left !important' }}>{entry.date}</TableCell>
+                        <TableCell sx={{ display: 'flex', alignItems: 'center' }}>{entry.description}</TableCell>
+                        <TableCell align="right">
+                          ${entry.amount.toLocaleString()}
+                        </TableCell>
+                        <TableCell>{formatTransactionType(entry.type)}</TableCell>
+                        <TableCell>
+                          <StatusChip
+                            icon={getStatusIcon(entry.status as TransactionStatus)}
+                            label={entry.status}
+                            status={entry.status}
+                          />
+                        </TableCell>
+                        <TableCell>{entry.accountNumber}</TableCell>
+                        <TableCell>
+                          {entry.matchedBankTransaction && entry.status === 'cleared' ? (
+                            <GLLink
+                              onClick={() => handleBankClick(entry.matchedBankTransaction!)}
+                            >
+                              {entry.reference}
+                            </GLLink>
+                          ) : entry.reference}
+                        </TableCell>
+                      </StyledTableRow>
+                      {awsDiffGL && awsExpand && (
+                        <TableRow>
+                          <TableCell colSpan={8}>
+                            <Box sx={{ color: 'grey', fontWeight: 300, pl: 6, py: 1, fontStyle: 'italic' }}>
+                              $0.5 difference b/w GL and bank. Recommend passing adjusting entry
+                            </Box>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </React.Fragment>
+                  );
+                })
               )}
             </TableBody>
           </Table>

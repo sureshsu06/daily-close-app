@@ -17,8 +17,11 @@ import {
   TableHead,
   TableRow,
   IconButton,
+  Tooltip,
 } from '@mui/material';
 import { CalendarToday as CalendarIcon } from '@mui/icons-material';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import EmailIcon from '@mui/icons-material/Email';
 import { AccrualEntry } from '../types/accrual';
 
 interface AccrualModalProps {
@@ -39,9 +42,9 @@ const HistoryTable = styled(TableContainer)(({ theme }) => ({
 // Mock historical data - in real app, this would come from an API
 const getHistoricalData = (description: string) => {
   return [
-    { date: '2024-02-15', amount: 4800, status: 'complete' },
-    { date: '2024-01-15', amount: 4600, status: 'complete' },
-    { date: '2023-12-15', amount: 5100, status: 'complete' },
+    { date: '2024-02-15', amount: 4800, status: 'complete', attachmentType: 'file' },
+    { date: '2024-01-15', amount: 4600, status: 'complete', attachmentType: 'email' },
+    { date: '2023-12-15', amount: 5100, status: 'complete', attachmentType: null },
   ];
 };
 
@@ -181,6 +184,7 @@ export const AccrualModal: React.FC<AccrualModalProps> = ({
                         <TableCell>Date</TableCell>
                         <TableCell align="right">Amount</TableCell>
                         <TableCell>Status</TableCell>
+                        <TableCell>Attachment</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -189,6 +193,18 @@ export const AccrualModal: React.FC<AccrualModalProps> = ({
                           <TableCell>{record.date}</TableCell>
                           <TableCell align="right">${record.amount.toLocaleString()}</TableCell>
                           <TableCell>{record.status}</TableCell>
+                          <TableCell>
+                            {record.attachmentType === 'file' && (
+                              <Tooltip title="File Attachment">
+                                <AttachFileIcon fontSize="small" />
+                              </Tooltip>
+                            )}
+                            {record.attachmentType === 'email' && (
+                              <Tooltip title="Email Attachment">
+                                <EmailIcon fontSize="small" />
+                              </Tooltip>
+                            )}
+                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

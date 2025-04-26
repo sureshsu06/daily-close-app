@@ -14,6 +14,7 @@ export interface AccrualEntry {
   preparedBy?: string;
   reviewedBy?: string;
   attachments?: string[];
+  confidence?: number;
 }
 
 export interface AccrualSummary {

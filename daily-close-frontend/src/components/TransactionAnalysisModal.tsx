@@ -216,6 +216,24 @@ export const TransactionAnalysisModal: React.FC<TransactionAnalysisModalProps> =
 
   if (!transaction) return null;
 
+  // Custom logic for NON-CHASE FEE-WITH
+  const isNonChaseFeeWith = transaction.description.includes('NON-CHASE FEE-WITH');
+  const nonChaseContextual = [
+    'Non-standard transaction detected - attributable to bank fees',
+    "Similar transaction name has previously been seen in Jan'24, Sep'23, Mar'23.",
+    'Previously we passed a GL entry for these transactions',
+  ];
+  const nonChasePrediction = [
+    'Manual review required due to it being an exception',
+    'Email bank support for more details on this particular fee',
+    'Document for the future',
+  ];
+  const nonChaseHistory = [
+    { date: "2024-01-31", name: 'NON-CHASE FEE-WITH', amount: 350, notes: 'GL entry passed' },
+    { date: "2023-09-30", name: 'NON-CHASE FEE-WITH', amount: 340, notes: 'GL entry passed' },
+    { date: "2023-03-31", name: 'NON-CHASE FEE-WITH', amount: 355, notes: 'GL entry passed' },
+  ];
+
   const analysis = getAnalysis(transaction);
 
   return (
@@ -235,23 +253,26 @@ export const TransactionAnalysisModal: React.FC<TransactionAnalysisModalProps> =
           </Typography>
         </DialogTitle>
         <DialogContent>
-          <Box sx={{ mb: 3, mt: 1, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-            <ActionChip
-              label="Email Bank Support"
-              onClick={() => handleEmailAction('bank')}
-              clickable
-            />
-            <ActionChip
-              label="Email Collections Team"
-              onClick={() => handleEmailAction('collections')}
-              clickable
-            />
-            <ActionChip
-              label="Reverse Entry"
-              onClick={handleReverseEntry}
-              clickable
-            />
-          </Box>
+          {/* Only show action chips at the top if not NON-CHASE FEE-WITH */}
+          {!isNonChaseFeeWith && (
+            <Box sx={{ mb: 3, mt: 1, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+              <ActionChip
+                label="Email Bank Support"
+                onClick={() => handleEmailAction('bank')}
+                clickable
+              />
+              <ActionChip
+                label="Email Collections Team"
+                onClick={() => handleEmailAction('collections')}
+                clickable
+              />
+              <ActionChip
+                label="Reverse Entry"
+                onClick={handleReverseEntry}
+                clickable
+              />
+            </Box>
+          )}
 
           <Divider sx={{ my: 2 }} />
 
@@ -261,7 +282,7 @@ export const TransactionAnalysisModal: React.FC<TransactionAnalysisModalProps> =
               Contextual Analysis
             </SectionTitle>
             <List dense>
-              {analysis.contextual.map((item, index) => (
+              {(isNonChaseFeeWith ? nonChaseContextual : analysis.contextual).map((item, index) => (
                 <ListItem key={index}>
                   <ListItemIcon sx={{ minWidth: 24 }}>•</ListItemIcon>
                   <ListItemText primary={item} />
@@ -278,22 +299,65 @@ export const TransactionAnalysisModal: React.FC<TransactionAnalysisModalProps> =
               Prediction & Recommendation
             </SectionTitle>
             <List dense>
-              <ListItem>
-                <ListItemIcon sx={{ minWidth: 24 }}>•</ListItemIcon>
-                <ListItemText primary={analysis.prediction} />
-              </ListItem>
-              <ListItem>
-                <ListItemIcon sx={{ minWidth: 24 }}>•</ListItemIcon>
-                <ListItemText primary={analysis.recommendation} />
-              </ListItem>
-              <ListItem>
-                <ListItemIcon sx={{ minWidth: 24 }}>•</ListItemIcon>
-                <ListItemText primary={analysis.followUp} />
-              </ListItem>
+              {(isNonChaseFeeWith ? nonChasePrediction : [analysis.prediction, analysis.recommendation, analysis.followUp]).map((item, idx) => (
+                <ListItem key={idx}>
+                  <ListItemIcon sx={{ minWidth: 24 }}>•</ListItemIcon>
+                  <ListItemText primary={item} />
+                </ListItem>
+              ))}
             </List>
           </Section>
+
+          {/* Historical Table for NON-CHASE FEE-WITH */}
+          {isNonChaseFeeWith && (
+            <Section>
+              <SectionTitle>Previous Occurrences</SectionTitle>
+              <Box sx={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
+                  <thead>
+                    <tr style={{ background: '#f5f5f5' }}>
+                      <th style={{ textAlign: 'left', padding: 8, borderBottom: '1px solid #ddd' }}>Date</th>
+                      <th style={{ textAlign: 'left', padding: 8, borderBottom: '1px solid #ddd' }}>Transaction Name</th>
+                      <th style={{ textAlign: 'right', padding: 8, borderBottom: '1px solid #ddd' }}>Amount</th>
+                      <th style={{ textAlign: 'left', padding: 8, borderBottom: '1px solid #ddd' }}>Notes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {nonChaseHistory.map((row, idx) => (
+                      <tr key={idx}>
+                        <td style={{ padding: 8, borderBottom: '1px solid #eee' }}>{row.date}</td>
+                        <td style={{ padding: 8, borderBottom: '1px solid #eee' }}>{row.name}</td>
+                        <td style={{ padding: 8, borderBottom: '1px solid #eee', textAlign: 'right' }}>${row.amount}</td>
+                        <td style={{ padding: 8, borderBottom: '1px solid #eee' }}>{row.notes}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </Box>
+            </Section>
+          )}
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+          {/* For NON-CHASE FEE-WITH, show chips at the bottom above Close */}
+          {isNonChaseFeeWith && (
+            <Box sx={{ mb: 1, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+              <ActionChip
+                label="Email Bank Support"
+                onClick={() => handleEmailAction('bank')}
+                clickable
+              />
+              <ActionChip
+                label="Pass GL Entry"
+                onClick={handleReverseEntry}
+                clickable
+              />
+              <ActionChip
+                label="Create Task"
+                onClick={() => {}}
+                clickable
+              />
+            </Box>
+          )}
           <Button onClick={onClose} color="primary">
             Close
           </Button>

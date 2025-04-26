@@ -141,20 +141,17 @@ const Dashboard: React.FC<DashboardProps> = ({ selectedTask }) => {
     if (!selectedTask) return null;
 
     // Check for specific task types
-    if (selectedTask.step_name === "Record India i/c cash tranfer") {
-      return <IndiaTransferView task={selectedTask} />;
+    switch (selectedTask.step_name) {
+      case "Record India i/c cash tranfer":
+        return <IndiaTransferView task={selectedTask} />;
+      case "Reconcile cash accounts with bank statements":
+        return <BankReconciliationTable />;
+      case "Record accrued expense":
+      case "Record accruals for services":
+        return <AccrualTable taskContext={true} />;
+      default:
+        return null;
     }
-
-    if (selectedTask.step_name === "Reconcile cash accounts with bank statements") {
-      return <BankReconciliationTable />;
-    }
-
-    if (selectedTask.step_name === "Record accrued expense") {
-      return <AccrualTable taskContext={true} />;
-    }
-
-    // Default content or other task types
-    return null;
   };
 
   return (
