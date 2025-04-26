@@ -1,0 +1,31 @@
+Transaction Date,Post Date,Description,Category,Type,Amount,Merchant,Card Type,Last 4 Digits,Account,Employee,Receipt,Notes,Reimbursable,Billable,Project Code
+2024-04-02,2024-04-03,SHOPIFY MONTHLY PLAN,Software & Services,Subscription,89.00,Shopify,Business Visa,5437,Primary,Sarah Williams,Yes,Standard subscription fee,No,No,OPS-2024
+2024-04-02,2024-04-03,ADOBE CREATIVE CLOUD,Software & Services,Subscription,52.99,Adobe,Business Visa,5437,Primary,Lisa Chen,Yes,Marketing team license,No,No,MKT-2024
+2024-04-03,2024-04-04,OFFICE DEPOT #2175,Office Supplies,Purchase,128.42,Office Depot,Business Visa,5437,Primary,John Anderson,Yes,Printer paper and office supplies,No,No,OPS-2024
+2024-04-03,2024-04-04,GOOGLE ADS,Advertising,Purchase,1250.00,Google,Business Visa,5437,Primary,Sarah Williams,Yes,Monthly ad spend,No,No,MKT-2024
+2024-04-04,2024-04-05,AMAZON.COM #A7BC23D4,Office Supplies,Purchase,85.97,Amazon,Business Visa,5437,Primary,Daniel Wilson,Yes,USB drives and cables,No,No,TECH-2024
+2024-04-05,2024-04-06,STAPLES #8765,Office Supplies,Purchase,43.25,Staples,Business Visa,5437,Primary,Michelle Thompson,Yes,Folders and organizers,No,No,OPS-2024
+2024-04-05,2024-04-06,META ADS FBDXY76WZ,Advertising,Purchase,875.30,Facebook,Business Visa,5437,Primary,Lisa Chen,Yes,Social media advertising,No,No,MKT-2024
+2024-04-07,2024-04-08,DELTA AIR 0067896302,Travel,Purchase,547.89,Delta Airlines,Business Visa,5437,Primary,James White,Yes,Flight to supplier meeting,No,No,MGMT-2024
+2024-04-07,2024-04-08,MAILCHIMP EMAIL MRKT,Software & Services,Subscription,79.99,Mailchimp,Business Visa,5437,Primary,Emily Garcia,Yes,Email marketing platform,No,No,MKT-2024
+2024-04-08,2024-04-09,UBER 072634829XYZ,Travel,Purchase,28.45,Uber,Business Visa,5437,Primary,James White,Yes,Airport transportation,No,No,MGMT-2024
+2024-04-08,2024-04-09,HILTON HOTELS #67543,Travel,Purchase,425.62,Hilton Hotels,Business Visa,5437,Primary,James White,Yes,Lodging for supplier meeting,No,No,MGMT-2024
+2024-04-09,2024-04-10,SHIPSTATION,Software & Services,Subscription,49.99,ShipStation,Business Visa,5437,Primary,David Martinez,Yes,Shipping management software,No,No,OPS-2024
+2024-04-10,2024-04-11,AMAZON.COM #C7DE56F9,Inventory,Purchase,1875.25,Amazon,Business AMEX,8214,Secondary,John Anderson,Yes,Inventory restock - accessories,No,No,INV-2024
+2024-04-10,2024-04-11,CANVA PRO,Software & Services,Subscription,12.99,Canva,Business Visa,5437,Primary,Christopher Rodriguez,Yes,Design software,No,No,MKT-2024
+2024-04-11,2024-04-12,GODADDY.COM,Software & Services,Subscription,15.17,GoDaddy,Business Visa,5437,Primary,Jennifer Taylor,Yes,Domain name renewal,No,No,TECH-2024
+2024-04-12,2024-04-13,THE UPS STORE #6758,Shipping,Purchase,178.45,UPS,Business Visa,5437,Primary,William Miller,Yes,Customer return shipping,No,No,OPS-2024
+2024-04-12,2024-04-13,GLOBAL THREADS INC,Inventory,Purchase,3250.75,GlobalThreads,Business AMEX,8214,Secondary,John Anderson,Yes,Apparel inventory restock,No,No,INV-2024
+2024-04-14,2024-04-15,FEDEX #987654321,Shipping,Purchase,236.78,FedEx,Business Visa,5437,Primary,William Miller,Yes,Priority shipments,No,No,OPS-2024
+2024-04-15,2024-04-16,ZOOM VIDEO COMM,Software & Services,Subscription,14.99,Zoom,Business Visa,5437,Primary,Daniel Wilson,Yes,Video conferencing,No,No,TECH-2024
+2024-04-15,2024-04-16,AWS AMAZON SERVICES,Software & Services,Subscription,237.85,Amazon Web Services,Business Visa,5437,Primary,Jennifer Taylor,Yes,Cloud hosting services,No,No,TECH-2024
+2024-04-16,2024-04-17,TECHGLOBAL WHOLESALE,Inventory,Purchase,4975.50,TechGlobal,Business AMEX,8214,Secondary,David Martinez,Yes,Electronics inventory purchase,No,No,INV-2024
+2024-04-16,2024-04-17,QUICKBOOKS ONLINE,Software & Services,Subscription,40.00,Intuit,Business Visa,5437,Primary,James White,Yes,Accounting software,No,No,FIN-2024
+2024-04-17,2024-04-18,INSTAGRAM PROMOTION,Advertising,Purchase,125.00,Facebook,Business Visa,5437,Primary,Emily Garcia,Yes,Product promotion campaign,No,No,MKT-2024
+2024-04-18,2024-04-19,COSTCO WHOLESALE #762,Office Supplies,Purchase,152.36,Costco,Business Visa,5437,Primary,Michelle Thompson,Yes,Break room supplies and snacks,No,No,OPS-2024
+2024-04-19,2024-04-20,LUXACCESSORIES LLC,Inventory,Purchase,2870.25,LuxAccessories,Business AMEX,8214,Secondary,David Martinez,Yes,Jewelry and accessories restock,No,No,INV-2024
+2024-04-20,2024-04-21,SQUARESPACE,Software & Services,Subscription,18.00,Squarespace,Business Visa,5437,Primary,Jennifer Taylor,Yes,Landing page subscription,No,No,MKT-2024
+2024-04-21,2024-04-22,KLAVIYO EMAIL MKTG,Software & Services,Subscription,150.00,Klaviyo,Business Visa,5437,Primary,Lisa Chen,Yes,Email marketing platform,No,No,MKT-2024
+2024-04-22,2024-04-23,BEST BUY #458,Office Equipment,Purchase,879.99,Best Buy,Business AMEX,8214,Secondary,Daniel Wilson,Yes,New computer for graphic designer,No,No,TECH-2024
+2024-04-23,2024-04-24,HOOTSUITE INC,Software & Services,Subscription,49.00,Hootsuite,Business Visa,5437,Primary,Emily Garcia,Yes,Social media management,No,No,MKT-2024
+2024-04-24,2024-04-25,USPS PO STAMPS,Shipping,Purchase,55.00,USPS,Business Visa,5437,Primary,William Miller,Yes,Postage for small packages,No,No,OPS-2024
