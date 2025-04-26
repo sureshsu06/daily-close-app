@@ -2,7 +2,22 @@ name: Build and Deploy React App
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, add-gh-pages ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+      debug:
+        description: 'Enable debug mode'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   build-and-deploy:
