@@ -1,27 +1,6 @@
 name: Build and Deploy React App
 
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
-    inputs:
-      branch:
-        description: 'Branch to deploy from'
-        required: true
-        default: 'main'
-      environment:
-        description: 'Environment to deploy to'
-        required: true
-        default: 'staging'
-        type: choice
-        options:
-          - staging
-          - production
-      debug:
-        description: 'Enable debug mode'
-        required: false
-        default: false
-        type: boolean
+on: workflow_dispatch:
 
 jobs:
   build-and-deploy:
