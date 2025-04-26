@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogTitle,
   DialogContent,
+  DialogActions,
+  Button,
   Typography,
   Box,
   Chip,
@@ -18,6 +20,7 @@ import {
 } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import { BankTransaction, GLEntry } from '../types';
+import { EmailModal } from './EmailModal';
 
 const Section = styled(Box)(({ theme }) => ({
   marginBottom: theme.spacing(3),
@@ -42,7 +45,25 @@ const ActionChip = styled(Chip)(({ theme }) => ({
   },
   '& .MuiChip-label': {
     padding: '8px 16px',
+    fontSize: '13px',
   }
+}));
+
+const StyledChip = styled(Chip)(({ theme }) => ({
+  margin: theme.spacing(0.5),
+  '& .MuiChip-label': {
+    fontSize: '13px',
+  },
+}));
+
+const ContentSection = styled(Box)(({ theme }) => ({
+  marginBottom: theme.spacing(3),
+}));
+
+const SectionContent = styled(Typography)(({ theme }) => ({
+  fontSize: '14px',
+  color: theme.palette.text.secondary,
+  lineHeight: 1.6,
 }));
 
 interface TransactionAnalysisModalProps {
@@ -180,80 +201,111 @@ export const TransactionAnalysisModal: React.FC<TransactionAnalysisModalProps> =
   onClose,
   transaction,
 }) => {
+  const [emailModalOpen, setEmailModalOpen] = useState(false);
+  const [emailType, setEmailType] = useState<'bank' | 'collections'>('bank');
+
+  const handleEmailAction = (type: 'bank' | 'collections') => {
+    setEmailType(type);
+    setEmailModalOpen(true);
+  };
+
+  const handleReverseEntry = () => {
+    // Handle reverse entry action
+    console.log('Reverse entry clicked');
+  };
+
   if (!transaction) return null;
 
   const analysis = getAnalysis(transaction);
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      maxWidth="md"
-      fullWidth
-    >
-      <DialogTitle>
-        <Typography variant="h6" component="div">
-          Transaction Analysis
-        </Typography>
-        <Typography variant="subtitle2" color="text.secondary">
-          {transaction.description} - ${transaction.amount.toLocaleString()}
-        </Typography>
-      </DialogTitle>
-      <DialogContent>
-        <Section>
-          <SectionTitle>
-            <AnalysisIcon fontSize="small" color="primary" />
-            Contextual Analysis
-          </SectionTitle>
-          <List dense>
-            {analysis.contextual.map((item, index) => (
-              <ListItem key={index}>
-                <ListItemIcon sx={{ minWidth: 24 }}>•</ListItemIcon>
-                <ListItemText primary={item} />
-              </ListItem>
-            ))}
-          </List>
-        </Section>
-
-        <Divider sx={{ my: 2 }} />
-
-        <Section>
-          <SectionTitle>
-            <TimingIcon fontSize="small" color="primary" />
-            Prediction & Recommendation
-          </SectionTitle>
-          <List dense>
-            <ListItem>
-              <ListItemIcon sx={{ minWidth: 24 }}>•</ListItemIcon>
-              <ListItemText primary={analysis.prediction} />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon sx={{ minWidth: 24 }}>•</ListItemIcon>
-              <ListItemText primary={analysis.recommendation} />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon sx={{ minWidth: 24 }}>•</ListItemIcon>
-              <ListItemText primary={analysis.followUp} />
-            </ListItem>
-          </List>
-        </Section>
-
-        <Divider sx={{ my: 2 }} />
-
-        <Box sx={{ mt: 2, textAlign: 'center' }}>
-          {analysis.suggestedActions.map((action, index) => (
+    <>
+      <Dialog
+        open={open}
+        onClose={onClose}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>
+          <Typography variant="h6" component="div">
+            Transaction Analysis
+          </Typography>
+          <Typography variant="subtitle2" color="text.secondary">
+            {transaction.description} - ${transaction.amount.toLocaleString()}
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          <Box sx={{ mb: 3, mt: 1, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
             <ActionChip
-              key={index}
-              label={action.label}
-              className={`action-${action.type}`}
-              onClick={() => {
-                // Handle action click
-                console.log(`Action clicked: ${action.label}`);
-              }}
+              label="Email Bank Support"
+              onClick={() => handleEmailAction('bank')}
+              clickable
             />
-          ))}
-        </Box>
-      </DialogContent>
-    </Dialog>
+            <ActionChip
+              label="Email Collections Team"
+              onClick={() => handleEmailAction('collections')}
+              clickable
+            />
+            <ActionChip
+              label="Reverse Entry"
+              onClick={handleReverseEntry}
+              clickable
+            />
+          </Box>
+
+          <Divider sx={{ my: 2 }} />
+
+          <Section>
+            <SectionTitle>
+              <AnalysisIcon fontSize="small" color="primary" />
+              Contextual Analysis
+            </SectionTitle>
+            <List dense>
+              {analysis.contextual.map((item, index) => (
+                <ListItem key={index}>
+                  <ListItemIcon sx={{ minWidth: 24 }}>•</ListItemIcon>
+                  <ListItemText primary={item} />
+                </ListItem>
+              ))}
+            </List>
+          </Section>
+
+          <Divider sx={{ my: 2 }} />
+
+          <Section>
+            <SectionTitle>
+              <TimingIcon fontSize="small" color="primary" />
+              Prediction & Recommendation
+            </SectionTitle>
+            <List dense>
+              <ListItem>
+                <ListItemIcon sx={{ minWidth: 24 }}>•</ListItemIcon>
+                <ListItemText primary={analysis.prediction} />
+              </ListItem>
+              <ListItem>
+                <ListItemIcon sx={{ minWidth: 24 }}>•</ListItemIcon>
+                <ListItemText primary={analysis.recommendation} />
+              </ListItem>
+              <ListItem>
+                <ListItemIcon sx={{ minWidth: 24 }}>•</ListItemIcon>
+                <ListItemText primary={analysis.followUp} />
+              </ListItem>
+            </List>
+          </Section>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <EmailModal
+        open={emailModalOpen}
+        onClose={() => setEmailModalOpen(false)}
+        transaction={transaction}
+        emailType={emailType}
+      />
+    </>
   );
 }; 

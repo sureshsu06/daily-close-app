@@ -17,13 +17,14 @@ const FileUpload: React.FC = () => {
   const [files, setFiles] = useState<UploadedFile[]>([]);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newFiles = Array.from(event.target.files || []).map((file) => ({
+    const newFiles = Array.from(event.target.files || []).map((file): UploadedFile => ({
       id: Math.random().toString(36).substr(2, 9),
       name: file.name,
       type: file.type,
       size: file.size,
-      uploadDate: new Date(),
-      status: 'processing' as const
+      uploadedAt: new Date().toISOString(),
+      status: 'processing',
+      errorMessage: undefined
     }));
 
     setFiles([...files, ...newFiles]);

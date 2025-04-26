@@ -17,6 +17,8 @@ import { getMockShopifyOrders } from '../services/shopifyService';
 import StripeSettlementTable from '../components/StripeSettlementTable';
 import { getMockStripePayments } from '../services/stripeService';
 import { BankReconciliationTable } from '../components/BankReconciliationTable';
+import IndiaTransferView from '../components/TaskContent/IndiaTransferView';
+import { AccrualTable } from '../components/AccrualTable';
 
 const DashboardContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -135,6 +137,26 @@ const Dashboard: React.FC<DashboardProps> = ({ selectedTask }) => {
     return integrations.split(',').map(i => i.replace(/"/g, '').trim());
   };
 
+  const renderTaskContent = () => {
+    if (!selectedTask) return null;
+
+    // Check for specific task types
+    if (selectedTask.step_name === "Record India i/c cash tranfer") {
+      return <IndiaTransferView task={selectedTask} />;
+    }
+
+    if (selectedTask.step_name === "Reconcile cash accounts with bank statements") {
+      return <BankReconciliationTable />;
+    }
+
+    if (selectedTask.step_name === "Record accrued expense") {
+      return <AccrualTable taskContext={true} />;
+    }
+
+    // Default content or other task types
+    return null;
+  };
+
   return (
     <DashboardContainer>
       {/* Breadcrumbs */}
@@ -181,55 +203,15 @@ const Dashboard: React.FC<DashboardProps> = ({ selectedTask }) => {
           <TaskTitle>{selectedTask.step_name}</TaskTitle>
           <TaskDescription>{selectedTask.description}</TaskDescription>
         </TaskHeader>
-
-        {/* Commented out for now - will revisit later
-        <TaskProperties>
-          <PropertyGroup>
-            <StatusSelector
-              currentStatus={selectedTask.status}
-              onStatusChange={() => {}}
-              size="small"
-            />
-          </PropertyGroup>
-
-          <PropertyGroup>
-            <PriorityIcon priority={selectedTask.priority} />
-            <Typography>{selectedTask.priority}</Typography>
-          </PropertyGroup>
-
-          <PropertyGroup>
-            <UserAvatar name={selectedTask.assigned_to} size="small" />
-            <Typography>{selectedTask.assigned_to}</Typography>
-          </PropertyGroup>
-
-          {selectedTask.integration_required && (
-            <PropertyGroup>
-              {getIntegrations(selectedTask.required_integrations).map((integration) => (
-                <IntegrationLogo key={integration} integration={integration} size="small" />
-              ))}
-            </PropertyGroup>
-          )}
-        </TaskProperties>
-        */}
       </Box>
 
       {/* Task Content */}
       <Box sx={{ flex: 1, mt: 3, overflow: 'auto' }}>
-        {selectedTask.step_name === 'Reconcile cash accounts with bank statements' ? (
-          <BankReconciliationTable 
-            onExceptionFound={(transaction) => {
-              console.log('Exception found:', transaction);
-            }}
-          />
-        ) : selectedTask.step_name === 'Extract Stripe daily settlement report with fees and refunds' ? (
-          <StripeSettlementTable payments={getMockStripePayments()} />
-        ) : (
-          <ShopifyOrdersTable orders={getMockShopifyOrders()} />
-        )}
+        {renderTaskContent()}
       </Box>
 
       {/* Comments Section */}
-      <Box sx={{ mt: 3, borderTop: '1px solid rgba(0, 0, 0, 0.08)', pt: 2 }}>
+      {/* <Box sx={{ mt: 3, borderTop: '1px solid rgba(0, 0, 0, 0.08)', pt: 2 }}>
         <Typography sx={{ 
           fontSize: '14px', 
           fontWeight: 500, 
@@ -246,7 +228,7 @@ const Dashboard: React.FC<DashboardProps> = ({ selectedTask }) => {
           value={comment}
           onChange={(e) => setComment(e.target.value)}
         />
-      </Box>
+      </Box> */}
     </DashboardContainer>
   );
 };

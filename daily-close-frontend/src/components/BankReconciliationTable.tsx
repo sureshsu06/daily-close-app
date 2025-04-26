@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Box,
   Paper,
@@ -19,11 +19,13 @@ import {
   FormControl,
   InputLabel,
   Theme,
+  Button,
 } from '@mui/material';
 import {
   Warning as WarningIcon,
   CheckCircle as CheckCircleIcon,
   Error as ErrorIcon,
+  CloudUpload,
 } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import { BankTransaction, GLEntry, ReconciliationSummary } from '../types';
@@ -116,6 +118,9 @@ const ViewToggle = styled(ToggleButtonGroup)(({ theme }) => ({
     fontWeight: 500,
     padding: '8px 24px',
     textTransform: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
     '&.Mui-selected': {
       backgroundColor: theme.palette.primary.main,
       color: '#fff',
@@ -173,6 +178,15 @@ const HeaderCell = styled(TableCell)(({ theme }) => ({
   fontSize: '13px',
 }));
 
+const SmallButton = styled(Button)(({ theme }) => ({
+  fontSize: '13px',
+  padding: '6px 12px',
+  height: '32px',
+  '& .MuiSvgIcon-root': {
+    fontSize: '18px',
+  },
+}));
+
 interface BankReconciliationTableProps {
   onExceptionFound?: (transaction: BankTransaction) => void;
 }
@@ -184,21 +198,37 @@ export const BankReconciliationTable: React.FC<BankReconciliationTableProps> = (
   const [glEntries, setGLEntries] = useState<GLEntry[]>([]);
   const [summary, setSummary] = useState<ReconciliationSummary | null>(null);
   const [selectedFilter, setSelectedFilter] = useState<TransactionStatus | 'all'>('all');
-  const [viewType, setViewType] = useState<'bank' | 'gl'>('bank');
+  const [viewType, setViewType] = useState<'bank' | 'gl'>('gl');
   const [highlightedGLEntry, setHighlightedGLEntry] = useState<string | null>(null);
   const [highlightedBankTransaction, setHighlightedBankTransaction] = useState<string | null>(null);
   const [selectedTransaction, setSelectedTransaction] = useState<BankTransaction | GLEntry | null>(null);
   const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
+  const [showUpload, setShowUpload] = useState(true);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const tableContainerRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Load initial data
-    const transactions = getMockBankTransactions();
+    // Load initial GL entries only
     const entries = getMockGLEntries();
-    setBankTransactions(transactions);
     setGLEntries(entries);
-    setSummary(getReconciliationSummary(transactions, entries));
   }, []);
+
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // In a real app, we would process the CSV file here
+    // For now, we'll just simulate loading the bank transactions
+    const transactions = getMockBankTransactions();
+    setBankTransactions(transactions);
+    setSummary(getReconciliationSummary(transactions, glEntries));
+    setShowUpload(false);
+    
+    // Reset the file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   useEffect(() => {
     // Scroll to highlighted row when it changes
@@ -314,6 +344,121 @@ export const BankReconciliationTable: React.FC<BankReconciliationTableProps> = (
     }
   };
 
+  if (showUpload) {
+    return (
+      <Box>
+        {/* Top Section with Filter and Toggle */}
+        <Box sx={{ 
+          display: 'flex',
+          gap: 3,
+          mb: 3,
+        }}>
+          {/* Left side with Filter */}
+          <Box sx={{ flex: 1 }}>
+            <Box sx={{ mb: 2 }}>
+              <StyledFormControl>
+                <InputLabel id="status-filter-label">Filter by Status</InputLabel>
+                <Select
+                  labelId="status-filter-label"
+                  value={selectedFilter}
+                  onChange={(e) => setSelectedFilter(e.target.value as TransactionStatus | 'all')}
+                  label="Filter by Status"
+                >
+                  <MenuItem value="all">All Transactions</MenuItem>
+                  <MenuItem value="cleared">Matched</MenuItem>
+                  <MenuItem value="review">For Review</MenuItem>
+                  <MenuItem value="exception">Exceptions</MenuItem>
+                </Select>
+              </StyledFormControl>
+            </Box>
+
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <ViewToggle
+                value={viewType}
+                exclusive
+                onChange={(_, newValue) => newValue && setViewType(newValue)}
+                aria-label="view type"
+              >
+                <ToggleButton 
+                  value="bank" 
+                  onClick={showUpload ? () => fileInputRef.current?.click() : undefined}
+                >
+                  {showUpload && <CloudUpload sx={{ fontSize: 18 }} />}
+                  Bank
+                </ToggleButton>
+                <ToggleButton value="gl">GL</ToggleButton>
+              </ViewToggle>
+
+              <input
+                type="file"
+                accept=".csv"
+                ref={fileInputRef}
+                onChange={handleFileSelect}
+                style={{ display: 'none' }}
+              />
+            </Box>
+          </Box>
+
+          {/* Right side Summary Text */}
+          <SummaryText>
+            Viewing GL entries. Upload bank statement to start reconciliation process.
+          </SummaryText>
+        </Box>
+
+        <StyledTableContainer ref={tableContainerRef}>
+          <Paper>
+            <Table stickyHeader>
+              <TableHead>
+                <TableRow>
+                  <HeaderCell sx={{ width: '100px' }}>Date</HeaderCell>
+                  <HeaderCell sx={{ width: '35%' }}>Description</HeaderCell>
+                  <HeaderCell sx={{ width: '100px' }} align="right">Amount</HeaderCell>
+                  <HeaderCell sx={{ width: '60px' }}>Type</HeaderCell>
+                  <HeaderCell sx={{ width: '100px' }}>Status</HeaderCell>
+                  <HeaderCell sx={{ width: '100px' }}>Account</HeaderCell>
+                  <HeaderCell sx={{ width: '100px' }}>Reference</HeaderCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <StyledTableRow sx={{ backgroundColor: (theme) => theme.palette.grey[100] }}>
+                  <TableCell>-</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Total</TableCell>
+                  <TableCell align="right" sx={{ fontWeight: 600 }}>
+                    ${getTotalAmount(glEntries).toLocaleString()}
+                  </TableCell>
+                  <TableCell>-</TableCell>
+                  <TableCell>-</TableCell>
+                  <TableCell>-</TableCell>
+                  <TableCell>-</TableCell>
+                </StyledTableRow>
+                {glEntries.map((entry) => (
+                  <StyledTableRow
+                    key={entry.entryId}
+                    data-entry-id={entry.entryId}
+                  >
+                    <TableCell>{entry.date}</TableCell>
+                    <TableCell>{entry.description}</TableCell>
+                    <TableCell align="right">${entry.amount.toLocaleString()}</TableCell>
+                    <TableCell>{formatTransactionType(entry.type)}</TableCell>
+                    <TableCell>
+                      <StatusChip
+                        icon={getStatusIcon(entry.status as TransactionStatus)}
+                        label={entry.status}
+                        status={entry.status as TransactionStatus}
+                      />
+                    </TableCell>
+                    <TableCell>{entry.accountNumber}</TableCell>
+                    <TableCell>{entry.reference}</TableCell>
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Paper>
+        </StyledTableContainer>
+      </Box>
+    );
+  }
+
   if (!summary) {
     return <Typography>Loading...</Typography>;
   }
@@ -358,7 +503,13 @@ export const BankReconciliationTable: React.FC<BankReconciliationTableProps> = (
             onChange={(_, newValue) => newValue && setViewType(newValue)}
             aria-label="view type"
           >
-            <ToggleButton value="bank">Bank</ToggleButton>
+            <ToggleButton 
+              value="bank" 
+              onClick={showUpload ? () => fileInputRef.current?.click() : undefined}
+            >
+              {showUpload && <CloudUpload sx={{ fontSize: 18 }} />}
+              Bank
+            </ToggleButton>
             <ToggleButton value="gl">GL</ToggleButton>
           </ViewToggle>
         </Box>

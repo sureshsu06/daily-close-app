@@ -56,7 +56,7 @@ const API_BASE_URL = 'http://localhost:3001/api/data';
 
 const mockData = `category,step_number,step_name,description,assigned_to,status,priority,estimated_time_minutes,requires_approval,integration_required,required_integrations
 Cash,1,Reconcile cash accounts with bank statements,Reconcile cash accounts,Pip,Not Started,High,10,Yes,Yes,"Bank"
-Cash,2,Record India i/c cash tranfer. Get bank statement from India and use FX rate to record the JE,Process India intercompany cash transfers,Pip,Not Started,High,10,Yes,Yes,"Bank"
+Cash,2,Record India i/c cash tranfer,Process India intercompany cash transfers. Get bank statement from India and use FX rate to record the JE.,Pip,Not Started,High,10,Yes,Yes,"Bank"
 Cash,3,Record all cash transaction not captured during the month,Process pending cash transactions,Pip,Not Started,High,10,Yes,No,""
 Cash,4,Record intercompany cash transfers/fundings not captured during the month,Process intercompany transfers,Pip,Not Started,High,10,Yes,No,""
 Cash,5,Record all cash transactions not captured during the month,Process remaining cash transactions,Pip,Not Started,High,10,Yes,No,""

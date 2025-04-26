@@ -27,41 +27,119 @@ const generateTransactionPair = (
   const date = `2024-03-${(index % 30) + 1}`.padStart(10, '0');
 
   // Vendor transactions with exact amounts
-  const vendorTransactions: Transaction[] = [
-    { description: 'Office rent payment - 123 Business Ave', amount: 4500.00, type: 'debit', date },
-    { description: 'AWS Cloud Services - Monthly hosting', amount: 1876.50, type: 'debit', date },
-    { description: 'Staples - Office supplies and printer cartridges', amount: 439.97, type: 'debit', date },
-    { description: 'ADP Payroll - Bi-weekly payroll processing', amount: 12750.00, type: 'debit', date },
-    { description: 'Hartford Insurance - Monthly premium', amount: 2150.00, type: 'debit', date },
-    { description: 'PG&E - Utility payment', amount: 543.21, type: 'debit', date },
-    { description: 'Google Ads - Marketing campaign Mar 2024', amount: 2750.00, type: 'debit', date },
-    { description: 'Salesforce - Annual subscription renewal', amount: 15000.00, type: 'debit', date },
-    { description: 'Deloitte - Q1 2024 Consulting services', amount: 7500.00, type: 'debit', date },
-    { description: 'Adobe Creative Cloud - Team subscription', amount: 479.88, type: 'debit', date },
-    { description: 'AT&T - Business phone and internet', amount: 389.99, type: 'debit', date },
-    { description: 'WeWork - Conference room booking', amount: 899.00, type: 'debit', date },
-    { description: 'QuickBooks - Monthly subscription', amount: 150.00, type: 'debit', date },
-    { description: 'Home Depot - Office maintenance supplies', amount: 287.64, type: 'debit', date },
-    { description: 'Dell - Laptop purchase IT dept', amount: 2399.98, type: 'debit', date },
-    { description: 'Zoom - Annual video conferencing', amount: 1800.00, type: 'debit', date }
+  const vendorTransactions: { gl: Transaction; bank: Transaction }[] = [
+    {
+      gl: { description: 'Office rent payment - 123 Business Ave', amount: 4500.00, type: 'debit', date },
+      bank: { description: 'ACH DEBIT - BUILDING MGMT LLC - RENT PMT REF#230984', amount: 4500.00, type: 'debit', date }
+    },
+    {
+      gl: { description: 'AWS Cloud Services - Monthly hosting', amount: 1876.50, type: 'debit', date },
+      bank: { description: 'AMZN AWS CLOUD PMT 1876.50 USD ACH', amount: 1876.50, type: 'debit', date }
+    },
+    {
+      gl: { description: 'Staples - Office supplies and printer cartridges', amount: 439.97, type: 'debit', date },
+      bank: { description: 'POS DEBIT - VISA STAPLES #1234 - PURCHASE 439.97 USD', amount: 439.97, type: 'debit', date }
+    },
+    {
+      gl: { description: 'ADP Payroll - Bi-weekly payroll processing', amount: 12750.00, type: 'debit', date },
+      bank: { description: 'ACH DEBIT - ADP PAYROLL FEES - REF#8294731', amount: 12750.00, type: 'debit', date }
+    },
+    {
+      gl: { description: 'Hartford Insurance - Monthly premium', amount: 2150.00, type: 'debit', date },
+      bank: { description: 'ACH WTH HARTFORD INS PREM 2150.00 USD', amount: 2150.00, type: 'debit', date }
+    },
+    {
+      gl: { description: 'PG&E - Utility payment', amount: 543.21, type: 'debit', date },
+      bank: { description: 'BILL PAY - PG&E UTILITY 543.21 USD REF#73629', amount: 543.21, type: 'debit', date }
+    },
+    {
+      gl: { description: 'Google Ads - Marketing campaign Mar 2024', amount: 2750.00, type: 'debit', date },
+      bank: { description: 'GOOGLE*ADS CC PMT ACH 2750.00 USD', amount: 2750.00, type: 'debit', date }
+    },
+    {
+      gl: { description: 'Salesforce - Annual subscription renewal', amount: 15000.00, type: 'debit', date },
+      bank: { description: 'ACH DEBIT SALESFORCE.COM SUBSCRIPTION PMT', amount: 15000.00, type: 'debit', date }
+    },
+    {
+      gl: { description: 'Deloitte - Q1 2024 Consulting services', amount: 7500.00, type: 'debit', date },
+      bank: { description: 'WIRE TRANSFER - DELOITTE & TOUCHE REF#982364', amount: 7500.00, type: 'debit', date }
+    },
+    {
+      gl: { description: 'Adobe Creative Cloud - Team subscription', amount: 479.88, type: 'debit', date },
+      bank: { description: 'ADOBE CREATIVE CLD PMT 479.88 USD ACH', amount: 479.88, type: 'debit', date }
+    },
+    {
+      gl: { description: 'AT&T - Business phone and internet', amount: 389.99, type: 'debit', date },
+      bank: { description: 'ATT*BILL PAYMENT 389.99 ACH DEBIT', amount: 389.99, type: 'debit', date }
+    },
+    {
+      gl: { description: 'WeWork - Conference room booking', amount: 899.00, type: 'debit', date },
+      bank: { description: 'WEWORK*OFFICE SPACE PMT - REF#762198', amount: 899.00, type: 'debit', date }
+    },
+    {
+      gl: { description: 'QuickBooks - Monthly subscription', amount: 150.00, type: 'debit', date },
+      bank: { description: 'INTUIT*QB ONLINE 150.00 USD DEBIT', amount: 150.00, type: 'debit', date }
+    },
+    {
+      gl: { description: 'Home Depot - Office maintenance supplies', amount: 287.64, type: 'debit', date },
+      bank: { description: 'HOME DEPOT #4738 PURCHASE 287.64 USD', amount: 287.64, type: 'debit', date }
+    },
+    {
+      gl: { description: 'Dell - Laptop purchase IT dept', amount: 2399.98, type: 'debit', date },
+      bank: { description: 'DELL COMPUTERS ORDER#DX89234 2399.98', amount: 2399.98, type: 'debit', date }
+    },
+    {
+      gl: { description: 'Zoom - Annual video conferencing', amount: 1800.00, type: 'debit', date },
+      bank: { description: 'ZOOM.US PAYMENT ACH PMT 1800.00 USD', amount: 1800.00, type: 'debit', date }
+    }
   ];
 
   // Bank fee transactions with exact amounts
-  const bankFeeTransactions: Transaction[] = [
-    { description: 'Monthly account maintenance fee', amount: 25.00, type: 'debit', date },
-    { description: 'Wire transfer fee', amount: 35.00, type: 'debit', date },
-    { description: 'ACH processing fee', amount: 15.00, type: 'debit', date },
-    { description: 'Check processing fee', amount: 20.00, type: 'debit', date },
-    { description: 'International transaction fee', amount: 45.00, type: 'debit', date },
-    { description: 'Overdraft protection fee', amount: 35.00, type: 'debit', date },
-    { description: 'Stop payment fee', amount: 30.00, type: 'debit', date },
-    { description: 'ATM service fee', amount: 3.50, type: 'debit', date }
+  const bankFeeTransactions: { gl: Transaction; bank: Transaction }[] = [
+    {
+      gl: { description: 'Monthly account maintenance fee', amount: 25.00, type: 'debit', date },
+      bank: { description: 'MONTHLY MAINTENANCE FEE', amount: 25.00, type: 'debit', date }
+    },
+    {
+      gl: { description: 'Wire transfer fee', amount: 35.00, type: 'debit', date },
+      bank: { description: 'WIRE TRANSFER FEE REF#982364', amount: 35.00, type: 'debit', date }
+    },
+    {
+      gl: { description: 'ACH processing fee', amount: 15.00, type: 'debit', date },
+      bank: { description: 'ACH ORIG RETURN FEE', amount: 15.00, type: 'debit', date }
+    },
+    {
+      gl: { description: 'Check processing fee', amount: 20.00, type: 'debit', date },
+      bank: { description: 'CHECK IMAGE ACCESS FEE', amount: 20.00, type: 'debit', date }
+    },
+    {
+      gl: { description: 'International transaction fee', amount: 45.00, type: 'debit', date },
+      bank: { description: 'INTL TRANSACTION SERVICE CHARGE', amount: 45.00, type: 'debit', date }
+    },
+    {
+      gl: { description: 'Overdraft protection fee', amount: 35.00, type: 'debit', date },
+      bank: { description: 'OVERDRAFT ITEM FEE', amount: 35.00, type: 'debit', date }
+    },
+    {
+      gl: { description: 'Stop payment fee', amount: 30.00, type: 'debit', date },
+      bank: { description: 'STOP PAYMENT CHARGE', amount: 30.00, type: 'debit', date }
+    },
+    {
+      gl: { description: 'ATM service fee', amount: 3.50, type: 'debit', date },
+      bank: { description: 'NON-CHASE ATM FEE-WITH', amount: 3.50, type: 'debit', date }
+    }
   ];
 
   // Customer payment transactions with exact amounts
-  const customerTransactions: Transaction[] = [
-    { description: 'Customer payment - Invoice #INV-2024-1234', amount: 5750.00, type: 'credit', date },
-    { description: 'Customer deposit - Contract #CON-2024-5678', amount: 8500.00, type: 'credit', date }
+  const customerTransactions: { gl: Transaction; bank: Transaction }[] = [
+    {
+      gl: { description: 'Customer payment - Invoice #INV-2024-1234', amount: 5750.00, type: 'credit', date },
+      bank: { description: 'DEPOSIT - ACH CREDIT ACME CORP INV1234', amount: 5750.00, type: 'credit', date }
+    },
+    {
+      gl: { description: 'Customer deposit - Contract #CON-2024-5678', amount: 8500.00, type: 'credit', date },
+      bank: { description: 'INCOMING WIRE - GLOBAL TECH LLC REF#763421', amount: 8500.00, type: 'credit', date }
+    }
   ];
 
   let transaction;
@@ -87,10 +165,10 @@ const generateTransactionPair = (
   if (type === 'vendor_payment') {
     const bankEntry: BankTransaction = {
       transactionId: `BT${id}`,
-      date: transaction.date,
-      description: transaction.description,
-      amount: transaction.amount,
-      type: transaction.type,
+      date: transaction.bank.date,
+      description: transaction.bank.description,
+      amount: transaction.bank.amount,
+      type: transaction.bank.type,
       status: 'cleared',
       checkNumber: `10${id}`,
       glAccountMatched: true,
@@ -100,10 +178,10 @@ const generateTransactionPair = (
 
     result.gl = {
       entryId: `GL${id}`,
-      date: transaction.date,
-      description: transaction.description,
-      amount: transaction.amount,
-      type: transaction.type,
+      date: transaction.gl.date,
+      description: transaction.gl.description,
+      amount: transaction.gl.amount,
+      type: transaction.gl.type,
       accountNumber: `${1000 + index}`,
       reference: bankEntry.checkNumber || `REF${id}`,
       matchedBankTransaction: `BT${id}`,
@@ -114,10 +192,10 @@ const generateTransactionPair = (
   else if (type === 'bank_fee') {
     result.bank = {
       transactionId: `BT${id}`,
-      date: transaction.date,
-      description: transaction.description,
-      amount: transaction.amount,
-      type: transaction.type,
+      date: transaction.bank.date,
+      description: transaction.bank.description,
+      amount: transaction.bank.amount,
+      type: transaction.bank.type,
       status: 'review',
       glAccountMatched: false
     };
@@ -126,10 +204,10 @@ const generateTransactionPair = (
   else if (type === 'customer_payment') {
     result.gl = {
       entryId: `GL${id}`,
-      date: transaction.date,
-      description: transaction.description,
-      amount: transaction.amount,
-      type: transaction.type,
+      date: transaction.gl.date,
+      description: transaction.gl.description,
+      amount: transaction.gl.amount,
+      type: transaction.gl.type,
       accountNumber: `${2000 + index}`,
       reference: `INV${id}`,
       status: 'exception'

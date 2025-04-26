@@ -34,6 +34,7 @@ import { getMockShopifyOrders } from '../services/shopifyService';
 import StripeSettlementTable from './StripeSettlementTable';
 import { getMockStripePayments } from '../services/stripeService';
 import { BankReconciliationTable } from './BankReconciliationTable';
+import { AccrualTable } from './AccrualTable';
 
 interface TaskQuickViewProps {
   open: boolean;
@@ -224,6 +225,8 @@ const TaskQuickView: React.FC<TaskQuickViewProps> = ({ open, onClose, task, isSu
               />
             ) : !isSubtask && (task as DailyCloseTask).step_name === 'Extract Stripe daily settlement report with fees and refunds' ? (
               <StripeSettlementTable payments={getMockStripePayments()} />
+            ) : !isSubtask && (task as DailyCloseTask).step_name === 'Record accrued expense' ? (
+              <AccrualTable taskContext={true} />
             ) : (
               <ShopifyOrdersTable orders={getMockShopifyOrders()} />
             )}

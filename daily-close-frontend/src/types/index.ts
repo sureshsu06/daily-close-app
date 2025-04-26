@@ -17,17 +17,6 @@ export interface FinancialArea {
   status: 'completed' | 'in_progress' | 'pending';
 }
 
-export interface PnLData {
-  date: string;
-  revenue: number;
-  cogs: number;
-  operatingExpenses: number;
-  netIncome: number;
-  details?: {
-    [key: string]: number;
-  };
-}
-
 export interface Anomaly {
   id: string;
   title: string;
@@ -44,7 +33,7 @@ export interface UploadedFile {
   name: string;
   type: string;
   size: number;
-  uploadDate: Date;
+  uploadedAt: string;
   status: 'processing' | 'completed' | 'error';
   errorMessage?: string;
 }

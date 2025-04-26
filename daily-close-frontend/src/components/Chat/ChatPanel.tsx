@@ -8,7 +8,10 @@ import {
   Paper,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Send as SendIcon } from '@mui/icons-material';
+import { 
+  Send as SendIcon,
+  Close as CloseIcon 
+} from '@mui/icons-material';
 
 const ChatContainer = styled(Box)(({ theme }) => ({
   width: '280px',
@@ -70,7 +73,11 @@ interface Message {
   timestamp: Date;
 }
 
-const ChatPanel: React.FC = () => {
+interface ChatPanelProps {
+  onClose: () => void;
+}
+
+const ChatPanel: React.FC<ChatPanelProps> = ({ onClose }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
@@ -117,19 +124,33 @@ const ChatPanel: React.FC = () => {
   return (
     <ChatContainer>
       <ChatHeader>
-        <Avatar 
+        <Box sx={{ display: 'flex', alignItems: 'center', flex: 1, gap: 1 }}>
+          <Avatar 
+            sx={{ 
+              width: 32, 
+              height: 32,
+              backgroundColor: '#1a73e8',
+              fontSize: '14px'
+            }}
+          >
+            A
+          </Avatar>
+          <Typography sx={{ fontWeight: 500, fontSize: '15px' }}>
+            Assistant
+          </Typography>
+        </Box>
+        <IconButton 
+          onClick={onClose}
+          size="small"
           sx={{ 
-            width: 32, 
-            height: 32,
-            backgroundColor: '#1a73e8',
-            fontSize: '14px'
+            color: 'text.secondary',
+            '&:hover': {
+              color: 'text.primary',
+            }
           }}
         >
-          A
-        </Avatar>
-        <Typography sx={{ fontWeight: 500, fontSize: '15px' }}>
-          Assistant
-        </Typography>
+          <CloseIcon fontSize="small" />
+        </IconButton>
       </ChatHeader>
 
       <ChatMessages>
