@@ -1,12 +1,10 @@
 name: Build and Deploy React App
 
 on:
+  push:
+    branches: [ main ]
   workflow_dispatch:
     inputs:
-      branch:
-        description: 'Branch to deploy from'
-        required: true
-        default: 'main'
       environment:
         description: 'Environment to deploy to'
         required: true
