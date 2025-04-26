@@ -53,5 +53,6 @@
   },
   "devDependencies": {
     "@types/papaparse": "^5.3.15"
-  }
+  },
+  "homepage": "https://shweta0310.github.io/daily-close-app"
 }
