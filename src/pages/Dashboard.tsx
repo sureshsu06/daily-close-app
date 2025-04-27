@@ -12,10 +12,7 @@ import StatusSelector from '../components/StatusSelector';
 import UserAvatar from '../components/UserAvatar';
 import PriorityIcon from '../components/PriorityIcon';
 import IntegrationLogo from '../components/IntegrationLogo';
-import { ShopifyOrdersTable } from '../components/ShopifyOrdersTable';
-import { getMockShopifyOrders } from '../services/shopifyService';
-import StripeSettlementTable from '../components/StripeSettlementTable';
-import { getMockStripePayments } from '../services/stripeService';
+
 import { BankReconciliationTable } from '../components/BankReconciliationTable';
 import IndiaTransferView from '../components/TaskContent/IndiaTransferView';
 import { AccrualTable } from '../components/AccrualTable';

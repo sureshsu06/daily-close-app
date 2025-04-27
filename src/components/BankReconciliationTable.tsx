@@ -110,7 +110,7 @@ const StyledFormControl = styled(FormControl)(({ theme }) => ({
     },
   },
   '& .MuiMenuItem-root': {
-    fontSize: '15px',
+    fontSize: '12px',
     padding: '6px 14px',
     height: '32px'
   },
@@ -486,6 +486,15 @@ export const BankReconciliationTable: React.FC<BankReconciliationTableProps> = (
   const counts = getTransactionCounts();
   const stats = getReconciliationStats();
 
+  // Add a CSS class for smaller dropdown items
+  const dropdownMenuItemStyle = `<style>.dropdown-menu-item { font-size: 12px !important; }</style>`;
+  if (typeof document !== 'undefined' && !document.getElementById('dropdown-menu-item-style')) {
+    const style = document.createElement('style');
+    style.id = 'dropdown-menu-item-style';
+    style.innerHTML = `.dropdown-menu-item { font-size: 13px !important; }`;
+    document.head.appendChild(style);
+  }
+
   return (
     <Box>
       {/* Top Section with Filter, Toggle, and Summary */}
@@ -509,10 +518,10 @@ export const BankReconciliationTable: React.FC<BankReconciliationTableProps> = (
                 onChange={(e) => setSelectedFilter(e.target.value as TransactionStatus | 'all')}
                 label="Filter by Status"
               >
-                <MenuItem value="all">All Transactions</MenuItem>
-                <MenuItem value="cleared">Matched</MenuItem>
-                <MenuItem value="review">For Review</MenuItem>
-                <MenuItem value="exception">Exceptions</MenuItem>
+                <MenuItem value="all" className="dropdown-menu-item">All Transactions</MenuItem>
+                <MenuItem value="cleared" className="dropdown-menu-item">Matched</MenuItem>
+                <MenuItem value="review" className="dropdown-menu-item">For Review</MenuItem>
+                <MenuItem value="exception" className="dropdown-menu-item">Exceptions</MenuItem>
               </Select>
             </StyledFormControl>
           </Box>
