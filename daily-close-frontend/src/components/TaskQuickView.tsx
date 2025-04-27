@@ -29,10 +29,6 @@ import StatusSelector from './StatusSelector';
 import UserAvatar from './UserAvatar';
 import PriorityIcon from './PriorityIcon';
 import IntegrationLogo from './IntegrationLogo';
-import { ShopifyOrdersTable } from './ShopifyOrdersTable';
-import { getMockShopifyOrders } from '../services/shopifyService';
-import StripeSettlementTable from './StripeSettlementTable';
-import { getMockStripePayments } from '../services/stripeService';
 import { BankReconciliationTable } from './BankReconciliationTable';
 import { AccrualTable } from './AccrualTable';
 
@@ -223,13 +219,9 @@ const TaskQuickView: React.FC<TaskQuickViewProps> = ({ open, onClose, task, isSu
                   console.log('Exception found:', transaction);
                 }}
               />
-            ) : !isSubtask && (task as DailyCloseTask).step_name === 'Extract Stripe daily settlement report with fees and refunds' ? (
-              <StripeSettlementTable payments={getMockStripePayments()} />
             ) : !isSubtask && ((task as DailyCloseTask).step_name === 'Record accrued expense' || (task as DailyCloseTask).step_name === 'Record accruals for services') ? (
               <AccrualTable taskContext={true} />
-            ) : (
-              <ShopifyOrdersTable orders={getMockShopifyOrders()} />
-            ))}
+            ) : null)}
           </Box>
 
           {/* Activity List */}

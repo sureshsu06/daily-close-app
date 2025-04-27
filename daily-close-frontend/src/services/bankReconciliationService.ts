@@ -336,7 +336,7 @@ export const getMockGLEntries = (): GLEntry[] => {
   const multiGL1 = {
     entryId: 'GL201',
     date: '2024-04-10',
-    description: 'Invoice #INV-1001',
+    description: 'ACME Invoice #INV-1001',
     amount: 1500,
     type: 'credit' as 'credit',
     accountNumber: '2101',
@@ -347,7 +347,7 @@ export const getMockGLEntries = (): GLEntry[] => {
   const multiGL2 = {
     entryId: 'GL202',
     date: '2024-04-10',
-    description: 'Invoice #INV-1002',
+    description: 'ACME Invoice #INV-1002',
     amount: 1500,
     type: 'credit' as 'credit',
     accountNumber: '2102',
